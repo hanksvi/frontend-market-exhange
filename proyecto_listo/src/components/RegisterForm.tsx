@@ -3,7 +3,7 @@ import api from "../apis/api"; // Importa la instancia de axios configurada
 import axios from "axios";
 import { AuthResponseError } from "../types/types";
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import {useAuth } from "../auth/AuthProvider";
+import {useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {

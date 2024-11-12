@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../apis/api";
-import { useAuth } from "../auth/AuthProvider";
+import { useAuth } from "../context/AuthProvider";
 
 interface CartItem {
     itemId: string;
