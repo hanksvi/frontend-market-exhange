@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../apis/api"; // Importa la instancia de axios configurada
 import { useAuth } from "../auth/AuthProvider";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { AuthResponse } from "../types/types"; // Importa AuthResponse desde el archivo correcto
 
 // Importa las imágenes desde src/assets/img/ si están allí
@@ -91,89 +91,14 @@ export default function LoginForm() {
         };
     }, [windowSize]);
 
-    // Manejar foco en el input de usuario
-    const handleUsuarioFocus = () => {
-        seguirPunteroMouse.current = false;
-    };
-
-    const handleUsuarioBlur = () => {
-        seguirPunteroMouse.current = true;
-    };
-
-    // Manejar foco en el input de contraseña
-    const handleClaveFocus = () => {
-        seguirPunteroMouse.current = false;
-        let cont = 1;
-
-        if (coverInterval.current !== null) {
-            window.clearInterval(coverInterval.current);
-            coverInterval.current = null;
-        }
-
-        coverInterval.current = window.setInterval(() => {
-            if (cont <= coverImages.length) {
-                setMonsterSrc(coverImages[cont - 1]);
-                cont++;
-            } else {
-                if (coverInterval.current !== null) {
-                    window.clearInterval(coverInterval.current);
-                    coverInterval.current = null;
-                }
-            }
-        }, 60);
-    };
-
-    const handleClaveBlur = () => {
-        seguirPunteroMouse.current = true;
-        let cont = coverImages.length;
-
-        if (descubrirInterval.current !== null) {
-            window.clearInterval(descubrirInterval.current);
-            descubrirInterval.current = null;
-        }
-
-        descubrirInterval.current = window.setInterval(() => {
-            if (cont > 0) {
-                setMonsterSrc(coverImages[cont - 1]);
-                cont--;
-            } else {
-                if (descubrirInterval.current !== null) {
-                    window.clearInterval(descubrirInterval.current);
-                    descubrirInterval.current = null;
-                }
-            }
-        }, 60);
-    };
-
-    // Manejar cambio en el input de usuario
-    const handleUsuarioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setUsername(value);
-        const length = value.length;
-        if (length <= 5) {
-            setMonsterSrc(readImages[0]);
-        } else if (length <= 14) {
-            setMonsterSrc(readImages[1]);
-        } else if (length <= 20) {
-            setMonsterSrc(readImages[2]);
-        } else {
-            setMonsterSrc(readImages[3]);
-        }
-    };
-
-    // Manejar envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await api.post("/auth/login", {
-                username,
-                password,
-            });
-
+            const response = await api.post("/auth/login", { username, password });
             const data = response.data as AuthResponse;
-            if (data.body.accessToken && data.body.refreshToken) {
-                auth.saveUser(data); 
-                navigate("/dashboard"); 
+            if (data.body.accessToken) {
+                auth.saveUser(data);
+                navigate("/dashboard");
             }
         } catch (error) {
             setError("Credenciales incorrectas. Intenta nuevamente.");
@@ -194,11 +119,8 @@ export default function LoginForm() {
                         type="text"
                         id="username"
                         value={username}
-                        onChange={handleUsuarioChange}
-                        onFocus={handleUsuarioFocus}
-                        onBlur={handleUsuarioBlur}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="mounstrito.gracioso@gmail.com"
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                         required
                     />
                 </div>
@@ -211,21 +133,11 @@ export default function LoginForm() {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onFocus={handleClaveFocus}
-                        onBlur={handleClaveBlur}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="***"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                         required
                     />
                 </div>
-                <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Login
-                    </button>
-                </div>
+                <button type="submit" className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded">Login</button>
             </form>
         </div>
     );
