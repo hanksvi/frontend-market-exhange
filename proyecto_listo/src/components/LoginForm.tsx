@@ -1,9 +1,7 @@
-// src/components/LoginForm.tsx
-import React, { useState, useEffect, useRef } from "react";
-import api from "../apis/api"; // Importa la instancia de axios configurada
-import { useAuth } from "../auth/AuthProvider";
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
+import api from "../apis/api";
+import { useAuth } from "../context/AuthProvider";
 import { useNavigate, Navigate } from "react-router-dom";
-
 // Importa las imágenes desde src/assets/img/ si están allí
 import idle1 from "../assets/img/idle/1.png";
 import idle2 from "../assets/img/idle/2.png";
@@ -22,14 +20,16 @@ import cover5 from "../assets/img/cover/5.png";
 import cover6 from "../assets/img/cover/6.png";
 import cover7 from "../assets/img/cover/7.png";
 import cover8 from "../assets/img/cover/8.png";
+import { LoginRequest } from "Interfaces/auth/LoginRequest";
+import { login } from "@services/login";
+
 
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];
 const readImages: string[] = [read1, read2, read3, read4];
 const coverImages: string[] = [cover1, cover2, cover3, cover4, cover5, cover6, cover7, cover8];
 
 export default function LoginForm() {
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [formData, setFormData] = useState<LoginRequest>({ username: "", password: "" });
     const [monsterSrc, setMonsterSrc] = useState<string>(idleImages[0]);
     const [error, setError] = useState<string | null>(null);
     const seguirPunteroMouse = useRef<boolean>(true);
@@ -148,37 +148,30 @@ export default function LoginForm() {
         }, 60);
     };
 
-    // Manejar cambio en el input de usuario
-    const handleUsuarioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setUsername(value);
-        const length = value.length;
-        if (length <= 5) {
-            setMonsterSrc(readImages[0]);
-        } else if (length <= 14) {
-            setMonsterSrc(readImages[1]);
-        } else if (length <= 20) {
-            setMonsterSrc(readImages[2]);
-        } else {
-            setMonsterSrc(readImages[3]);
-        }
+    // Manejar cambio en los inputs
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
 
     // Manejar envío del formulario
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await api.post("/auth/login", {
-                username,
-                password,
-            });
-            if (response.status === 200) {
-                console.log("Login exitoso");
-                setError(null);
-                navigate("/dashboard"); // Redirige al dashboard
+            const data = await login(formData); // Llama a la función `login` y recibe `AuthResponse`
+            setError(null);
+    
+            // Guarda el usuario en el contexto de autenticación si tiene los tokens
+            if (data.data.accessToken && data.data.refreshToken) {
+                auth.saveUser(data.data); 
+                navigate("/dashboard"); 
             }
-        } catch (error) {
-            setError("Credenciales incorrectas. Intenta nuevamente.");
+        } catch (error: any) {
+            const message = error.response?.data?.message || "Credenciales incorrectas. Intenta nuevamente.";
+            setError(message);
         }
     };
 
@@ -194,9 +187,10 @@ export default function LoginForm() {
                     </label>
                     <input
                         type="text"
+                        name="username"
                         id="username"
-                        value={username}
-                        onChange={handleUsuarioChange}
+                        value={formData.username}
+                        onChange={handleChange}
                         onFocus={handleUsuarioFocus}
                         onBlur={handleUsuarioBlur}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -210,9 +204,10 @@ export default function LoginForm() {
                     </label>
                     <input
                         type="password"
+                        name="password"
                         id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={formData.password}
+                        onChange={handleChange}
                         onFocus={handleClaveFocus}
                         onBlur={handleClaveBlur}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"

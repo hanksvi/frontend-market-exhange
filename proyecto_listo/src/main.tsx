@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
-import { AuthProvider } from './auth/AuthProvider';
+import { AuthProvider } from './context/AuthProvider';
 import { Outlet, Navigate } from "react-router-dom";
 
 
