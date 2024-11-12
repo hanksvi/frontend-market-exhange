@@ -1,17 +1,36 @@
-import React from "react";
-import DefaultLayout from "../layout/DefaultLayout";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { RegisterRequest } from "@interfaces/auth/RegisterRequest";
 import RegisterForm from "../components/RegisterForm";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthProvider";
+import { register } from "../services/auth/register";
 
 export default function RegisterPage() {
-    const auth= useAuth();
-    if(auth.isAuthenticated){
-        return <Navigate to="/dashboard"/>
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState<RegisterRequest>({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        phone: "",
+        address: "",
+        isAdmin: false,
+    });
+
+    async function handleRegisterSubmit(data: RegisterRequest) {
+        try {
+            await register(data);
+            navigate("/");
+        } catch {
+            alert("Error al registrar. Inténtalo de nuevo.");
+        }
     }
+
     return (
-        <DefaultLayout>
-            <RegisterForm />
-        </DefaultLayout>
+
+        <RegisterForm
+            formData={formData}
+            setFormData={setFormData}
+            onSubmit={handleRegisterSubmit}
+        />
     );
 }

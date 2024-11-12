@@ -1,218 +1,184 @@
-import React, { useState } from "react";
-import api from "../apis/api"; // Importa la instancia de axios configurada
-import axios from "axios";
-import { AuthResponseError } from "../types/types";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { RegisterRequest } from "@interfaces/auth/RegisterRequest";
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import {useAuth } from "../auth/AuthProvider";
-import { useNavigate } from "react-router-dom";
 
-export default function RegisterForm() {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+interface RegisterFormProps {
+    formData: RegisterRequest;
+    setFormData: React.Dispatch<React.SetStateAction<RegisterRequest>>;
+    onSubmit: (data: RegisterRequest) => Promise<void>;
+}
 
+export default function RegisterForm({ formData, setFormData, onSubmit }: RegisterFormProps) {
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-    const auth = useAuth();
-    const goTo= useNavigate();
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        const { name, value, type, checked } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    }
 
-    async function handleSubmit(e: React.FormEvent) {
+    function handleConfirmPasswordChange(e: ChangeEvent<HTMLInputElement>) {
+        setConfirmPassword(e.target.value);
+    }
+
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setErrorMessage(null);
 
-        if (password.length < 8) {
-            setError("La contraseña debe tener al menos 8 caracteres");
+        if (formData.password.length < 8) {
+            setErrorMessage("La contraseña debe tener al menos 8 caracteres");
             return;
         }
 
-        if (password !== confirmPassword) {
-            setError("Las contraseñas no coinciden");
+        if (formData.password !== confirmPassword) {
+            setErrorMessage("Las contraseñas no coinciden");
             return;
         }
 
-        try {
-            const response = await api.post("/auth/register", {
-                firstName,
-                lastName,
-                email,
-                password,
-                phone,
-                address,
-                isAdmin,
-            });
-
-            if (response.status === 201) {
-                setSuccess("Usuario creado exitosamente");
-                setError(null);
-
-                goTo("/");
-            }
-        } catch (err) {
-            if (axios.isAxiosError(err) && err.response?.status === 409) {
-                const authError = err.response?.data as AuthResponseError;
-                setError(authError.body.error || "Ya existe una cuenta con este correo electrónico.");
-            } else {
-                setError("Error en el registro: " + (err as Error).message);
-            }
-            setSuccess(null);
-        }
+        await onSubmit(formData);
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-md bg-white shadow-md rounded px-8 py-6 border-4 border-blue-700"
+                style={{ maxWidth: "24rem" }} // Define el tamaño máximo en rem para mayor consistencia
             >
                 <h2 className="text-2xl font-bold mb-6 text-center">Registro</h2>
 
-                <div className="mb-4 h-6 flex items-center">
-                    {error && <p className="text-red-600 text-sm">{error}</p>}
-                </div>
-
-                {success && <p className="text-green-600 mb-4">{success}</p>}
+                {/* Espacio para el mensaje de error */}
+                {errorMessage && (
+                    <div className="text-red-600 text-sm mb-4 text-center">{errorMessage}</div>
+                )}
 
                 {/* Input para Nombre */}
                 <div className="mb-4 relative flex items-center">
                     <FaUser className="absolute left-3 text-gray-500" size={20} />
                     <input
                         type="text"
+                        name="firstName"
                         id="firstName"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
+                        value={formData.firstName}
+                        onChange={handleChange}
                         className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
                         placeholder="Tu nombre"
                         required
                     />
                 </div>
 
-                {/* Repite el mismo bloque para otros campos */}
+                {/* Input para Apellido */}
                 <div className="mb-4 relative flex items-center">
                     <FaUser className="absolute left-3 text-gray-500" size={20} />
                     <input
                         type="text"
+                        name="lastName"
                         id="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
+                        value={formData.lastName}
+                        onChange={handleChange}
                         className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
                         placeholder="Tu apellido"
                         required
                     />
                 </div>
 
+                {/* Input para Email */}
                 <div className="mb-4 relative flex items-center">
                     <FaEnvelope className="absolute left-3 text-gray-500" size={20} />
                     <input
                         type="email"
+                        name="email"
                         id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={formData.email}
+                        onChange={handleChange}
                         className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
                         placeholder="tuemail@ejemplo.com"
                         required
                     />
                 </div>
 
-                <div className="mb-4 relative flex items-center">
-                    <FaPhone className="absolute left-3 text-gray-500" size={20} />
-                    <input
-                        type="text"
-                        id="phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
-                        placeholder="Tu número de teléfono"
-                        required
-                    />
-                </div>
-
-                <div className="mb-4 relative flex items-center">
-                    <FaMapMarkerAlt className="absolute left-3 text-gray-500" size={20} />
-                    <input
-                        type="text"
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
-                        placeholder="Tu dirección"
-                        required
-                    />
-                </div>
-
+                {/* Input para Contraseña */}
                 <div className="mb-4 relative flex items-center">
                     <FaLock className="absolute left-3 text-gray-500" size={20} />
                     <input
                         type="password"
+                        name="password"
                         id="password"
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            if (e.target.value.length < 8) {
-                                setError("La contraseña debe tener al menos 8 caracteres");
-                            } else {
-                                setError(null);
-                            }
-                        }}
+                        value={formData.password}
+                        onChange={handleChange}
                         className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
                         placeholder="Contraseña"
                         required
                     />
                 </div>
 
-                <div className="mb-6 relative flex items-center">
+                {/* Input para Confirmar Contraseña */}
+                <div className="mb-4 relative flex items-center">
                     <FaLock className="absolute left-3 text-gray-500" size={20} />
                     <input
                         type="password"
                         id="confirmPassword"
                         value={confirmPassword}
-                        onChange={(e) => {
-                            setConfirmPassword(e.target.value);
-                            if (e.target.value !== password) {
-                                setError("Las contraseñas no coinciden");
-                            } else {
-                                setError(null);
-                            }
-                        }}
+                        onChange={handleConfirmPasswordChange}
                         className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
                         placeholder="Confirmar contraseña"
                         required
                     />
                 </div>
 
+                {/* Input para Celular */}
+                <div className="mb-4 relative flex items-center">
+                    <FaPhone className="absolute left-3 text-gray-500" size={20} />
+                    <input
+                        type="text"
+                        name="phone"
+                        id="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
+                        placeholder="Tu número de teléfono"
+                        required
+                    />
+                </div>
+
+                {/* Input para Dirección */}
+                <div className="mb-4 relative flex items-center">
+                    <FaMapMarkerAlt className="absolute left-3 text-gray-500" size={20} />
+                    <input
+                        type="text"
+                        name="address"
+                        id="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight transition-all duration-300 focus:outline-none focus:border-blue-600 focus:shadow-lg"
+                        placeholder="Tu dirección"
+                        required
+                    />
+                </div>
+
+                {/* Checkbox para Administrador */}
                 <div className="mb-6 flex items-center">
                     <input
                         type="checkbox"
-                        checked={isAdmin}
-                        onChange={(e) => setIsAdmin(e.target.checked)}
+                        name="isAdmin"
+                        id="isAdmin"
+                        checked={formData.isAdmin}
+                        onChange={handleChange}
                         className="mr-2 leading-tight transform transition-transform duration-300 hover:scale-110"
                     />
                     <span className="text-gray-700 text-sm">Registrar como administrador</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-transform duration-300 hover:scale-105"
-                    >
-                        Registrarse
-                    </button>
-                </div>
-
-                <p className="mt-4 text-center text-gray-600 text-sm">
-                    ¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia Sesión</a>
-                </p>
+                <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-transform duration-300 hover:scale-105"
+                >
+                    Registrarse
+                </button>
             </form>
-        </div>
+        </section>
     );
 }
-
-
-
-
-
-

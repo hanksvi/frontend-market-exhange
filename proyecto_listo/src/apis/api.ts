@@ -1,43 +1,106 @@
-import axios from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  RawAxiosRequestHeaders,
+} from "axios";
 
-// Configuración de la instancia de Axios
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // usa la URL de la API definida en .env
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+export default class Api {
+  private static _instance: Api | null = null;
 
-// Función para iniciar sesión
-export const login = async (email: string, password: string) => {
-  try {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
-  } catch (error) {
-    throw new Error("Error en el inicio de sesión");
+  private _basePath: string;
+
+  private _authorization: string | null;
+
+  public set authorization(value: string) {
+    this._authorization = value;
   }
-};
 
-// Función para registrarse
-export const register = async (firstName: string, lastName: string, email: string, password: string, phone: string, address: string, isAdmin: boolean) => {
-  try {
-    const response = await api.post('/auth/register', {
-      firstName,
-      lastName,
-      email,
-      password,
-      phone,
-      address,
-      isAdmin,
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 409) {
-      throw new Error("Ya existe una cuenta con este correo electrónico.");
+  private constructor(basePath: string, authorization: string | null) {
+    this._basePath = basePath;
+    this._authorization = authorization;
+  }
+
+  public static async getInstance() {
+    if (!this._instance) {
+      const basePath = `http://${import.meta.env.VITE_BASE_URL}:8080`;
+      console.log("Base URL:", basePath);
+      this._instance = new Api(basePath, null);
     }
-    throw new Error("Error en el registro");
-  }
-};
 
-// Exporta la instancia de Axios para otros usos si es necesario
-export default api;
+    return this._instance;
+  }
+
+  public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
+    const headers: RawAxiosRequestHeaders = {
+      "Content-Type": "application/json",
+      Authorization: this._authorization ? `Bearer ${this._authorization}` : "",
+    };
+
+    const configOptions: AxiosRequestConfig = {
+      ...config,
+      baseURL: this._basePath,
+      headers: headers,
+    };
+
+    const path = this._basePath + config.url;
+
+    return axios<RequestType, AxiosResponse<ResponseType>>(path, configOptions);
+  }
+
+  public get<RequestType, ResponseType>(config: AxiosRequestConfig) {
+    const configOptions: AxiosRequestConfig = {
+      ...config,
+      method: "GET",
+    };
+
+    return this.request<RequestType, ResponseType>(configOptions);
+  }
+
+  public post<RequestBodyType, ResponseBodyType>(
+      data: RequestBodyType,
+      options: AxiosRequestConfig,
+  ) {
+    const configOptions: AxiosRequestConfig = {
+      ...options,
+      method: "POST",
+      data,
+    };
+
+    return this.request<RequestBodyType, ResponseBodyType>(configOptions);
+  }
+
+  public delete(options: AxiosRequestConfig) {
+    const configOptions: AxiosRequestConfig = {
+      ...options,
+      method: "DELETE",
+    };
+
+    return this.request<void, void>(configOptions);
+  }
+
+  public put<RequestBodyType, ResponseBodyType>(
+      data: RequestBodyType,
+      options: AxiosRequestConfig,
+  ) {
+    const configOptions: AxiosRequestConfig = {
+      ...options,
+      method: "PUT",
+      data: data,
+    };
+
+    return this.request<RequestBodyType, ResponseBodyType>(configOptions);
+  }
+
+  public patch<RequestBodyType, ResponseBodyType>(
+      data: RequestBodyType,
+      options: AxiosRequestConfig,
+  ) {
+    const configOptions: AxiosRequestConfig = {
+      ...options,
+      method: "PATCH",
+      data: data,
+    };
+
+    return this.request<RequestBodyType, ResponseBodyType>(configOptions);
+  }
+}

@@ -8,5 +8,5 @@ export default function ProtectedRoute(){
     const auth = useAuth();
     //return isAuth   ? <Outlet /> : <Navigate to="/"/>;
 
-    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/login "/>
+    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/"/>
 }

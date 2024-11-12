@@ -17,14 +17,14 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": "./src", // Agrega esta línea
-    "paths": {          // Agrega esta sección con tus alias
+    "baseUrl": "./src",
+    "paths": {
       "@contexts/*": ["contexts/*"],
       "@hooks/*": ["hooks/*"],
       "@interfaces/*": ["interfaces/*"],
       "@services/*": ["services/*"],
       "@components/*": ["components/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
     }
   },
   "include": ["src",
