@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import api from "../apis/api"; // Importa la instancia de axios configurada
 import { useAuth } from "../auth/AuthProvider";
 import { useNavigate, Navigate } from "react-router-dom";
+import type { AuthResponse } from "../types/types"; // Importa AuthResponse desde el archivo correcto
 
 // Importa las imágenes desde src/assets/img/ si están allí
 import idle1 from "../assets/img/idle/1.png";
@@ -38,10 +39,6 @@ export default function LoginForm() {
 
     const auth = useAuth();
     const navigate = useNavigate();
-
-    if (auth.isAuthenticated) {
-        return <Navigate to="/dashboard" />;
-    }
 
     // Estado para manejar el tamaño de la ventana
     const [windowSize, setWindowSize] = useState<{ anchoMitad: number; altoMitad: number }>({
@@ -172,10 +169,11 @@ export default function LoginForm() {
                 username,
                 password,
             });
-            if (response.status === 200) {
-                console.log("Login exitoso");
-                setError(null);
-                navigate("/dashboard"); // Redirige al dashboard
+
+            const data = response.data as AuthResponse;
+            if (data.body.accessToken && data.body.refreshToken) {
+                auth.saveUser(data); 
+                navigate("/dashboard"); 
             }
         } catch (error) {
             setError("Credenciales incorrectas. Intenta nuevamente.");
