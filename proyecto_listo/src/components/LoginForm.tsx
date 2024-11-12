@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "reac
 import api from "../apis/api";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate, Navigate } from "react-router-dom";
-
 // Importa las imágenes desde src/assets/img/ si están allí
 import idle1 from "../assets/img/idle/1.png";
 import idle2 from "../assets/img/idle/2.png";
@@ -23,6 +22,7 @@ import cover7 from "../assets/img/cover/7.png";
 import cover8 from "../assets/img/cover/8.png";
 import { LoginRequest } from "Interfaces/auth/LoginRequest";
 import { login } from "@services/login";
+
 
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];
 const readImages: string[] = [read1, read2, read3, read4];
@@ -161,9 +161,14 @@ export default function LoginForm() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await login(formData);
+            const data = await login(formData); // Llama a la función `login` y recibe `AuthResponse`
             setError(null);
-            navigate("/dashboard");
+    
+            // Guarda el usuario en el contexto de autenticación si tiene los tokens
+            if (data.data.accessToken && data.data.refreshToken) {
+                auth.saveUser(data.data); 
+                navigate("/dashboard"); 
+            }
         } catch (error: any) {
             const message = error.response?.data?.message || "Credenciales incorrectas. Intenta nuevamente.";
             setError(message);
