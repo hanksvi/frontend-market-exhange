@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { RegisterRequest } from "@interfaces/auth/RegisterRequest";
+import { RegisterRequest } from "../interfaces/auth/RegisterRequest";
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 interface RegisterFormProps {

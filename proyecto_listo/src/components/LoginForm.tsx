@@ -20,8 +20,8 @@ import cover5 from "../assets/img/cover/5.png";
 import cover6 from "../assets/img/cover/6.png";
 import cover7 from "../assets/img/cover/7.png";
 import cover8 from "../assets/img/cover/8.png";
-import { LoginRequest } from "interfaces/auth/LoginRequest";
-import { login } from "@services/auth/login.ts";
+import { LoginRequest } from "../interfaces/auth/LoginRequest";
+import { login } from "../services/auth/login.ts";
 
 
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];

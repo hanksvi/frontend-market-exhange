@@ -1,5 +1,5 @@
-import { AuthResponse } from "@interfaces/auth/AuthResponse";
-import { RegisterRequest } from "@interfaces/auth/RegisterRequest";
+import { AuthResponse } from "../../interfaces/auth/AuthResponse";
+import { RegisterRequest } from "../../interfaces/auth/RegisterRequest";
 import Api from "../../apis/api";
 
 export async function register(registerRequest: RegisterRequest) {
