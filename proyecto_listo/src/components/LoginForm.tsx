@@ -20,8 +20,8 @@ import cover5 from "../assets/img/cover/5.png";
 import cover6 from "../assets/img/cover/6.png";
 import cover7 from "../assets/img/cover/7.png";
 import cover8 from "../assets/img/cover/8.png";
-import { LoginRequest } from "../interfaces/auth/LoginRequest";
-import { login } from "../services/auth/login.ts";
+import { LoginRequest } from "interfaces/auth/LoginRequest";
+import { login } from "@services/auth/login";
 
 
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];
@@ -163,11 +163,11 @@ export default function LoginForm() {
         try {
             const data = await login(formData); // Llama a la función `login` y recibe `AuthResponse`
             setError(null);
-    
+
             // Guarda el usuario en el contexto de autenticación si tiene los tokens
-            if (data.data.accessToken ) {
-                auth.saveUser(data);
-                navigate("/dashboard"); 
+            if (data.data.accessToken && data.data.refreshToken) {
+                auth.saveUser(data.data);
+                navigate("/dashboard");
             }
         } catch (error: any) {
             const message = error.response?.data?.message || "Credenciales incorrectas. Intenta nuevamente.";
