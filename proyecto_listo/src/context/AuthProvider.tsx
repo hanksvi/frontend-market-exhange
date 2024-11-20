@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import type { AuthResponse } from "../types/types";
+import type { AuthResponse } from "../interfaces/auth/AuthResponse";
 
 interface AuthProviderProps {
     children: React.ReactNode;
@@ -32,17 +32,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
     function saveUser(userData: AuthResponse) {
-        const token = userData.body.accessToken;
+        const token = userData.token;
         setAccessToken(token);
         localStorage.setItem("accessToken", token);
         setIsAuthenticated(true);
     }
 
     function logout() {
+        console.log("Antes de logout:", isAuthenticated);
         setAccessToken(null);
         localStorage.removeItem("accessToken");
         setIsAuthenticated(false);
+        console.log("Después de logout:", isAuthenticated);
     }
+    
 
     function getAccessToken() {
         return accessToken;

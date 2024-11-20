@@ -5,9 +5,11 @@ import { LoginRequest } from "@interfaces/auth/LoginRequest.ts";
 
 export async function login(LoginRequest: LoginRequest) {
     const api = await Api.getInstance();
-    const response = await api.post<AuthResponse, LoginRequest>("auth/login", LoginRequest);
+    const response = await api.post<LoginRequest, AuthResponse>(LoginRequest, {
+        url: "/auth/login",
+    });
 
-    api.authorization = response.data.accessToken;
+    api.authorization = response.data.token;
 
     return response;
 }

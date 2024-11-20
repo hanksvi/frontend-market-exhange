@@ -10,8 +10,6 @@ export default function LoginPage() {
         return <Navigate to="/dashboard"/>
     }
     return (
-        <DefaultLayout>
-            <LoginForm />
-        </DefaultLayout>
+        <LoginForm />
     );
 }

@@ -21,7 +21,7 @@ import cover6 from "../assets/img/cover/6.png";
 import cover7 from "../assets/img/cover/7.png";
 import cover8 from "../assets/img/cover/8.png";
 import { LoginRequest } from "interfaces/auth/LoginRequest";
-import { login } from "@services/auth/login";
+import { login } from "../services/auth/login";
 
 
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];
@@ -165,7 +165,7 @@ export default function LoginForm() {
             setError(null);
 
             // Guarda el usuario en el contexto de autenticación si tiene los tokens
-            if (data.data.accessToken && data.data.refreshToken) {
+            if (data.data.token) {
                 auth.saveUser(data.data);
                 navigate("/dashboard");
             }
