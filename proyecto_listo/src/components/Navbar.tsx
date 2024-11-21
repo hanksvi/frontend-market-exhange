@@ -22,7 +22,7 @@ export default function Navbar() {
                     Ayuda
                 </a>
             </div>
-
+            
             {/* Sección derecha del navbar */}
             <div className="relative">
                 {auth.isAuthenticated ? (

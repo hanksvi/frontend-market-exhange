@@ -27,6 +27,7 @@ export default function RegisterForm({ formData, setFormData, onSubmit }: Regist
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setErrorMessage(null);
+        
 
         if (formData.password.length < 8) {
             setErrorMessage("La contraseña debe tener al menos 8 caracteres");
@@ -38,6 +39,12 @@ export default function RegisterForm({ formData, setFormData, onSubmit }: Regist
             return;
         }
 
+            // Determina el rol basado en el campo `isAdmin`
+    const userRole = formData.isAdmin ? "Administrador" : "Usuario";
+
+    // Imprime el rol en la consola
+    console.log(`Rol del usuario creado: ${userRole}`);
+    
         await onSubmit(formData);
     }
 

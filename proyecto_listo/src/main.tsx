@@ -10,6 +10,8 @@ import { AuthProvider } from './context/AuthProvider';
 import { Outlet, Navigate } from "react-router-dom";
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
+import CreateCategoryPage from './pages/CreateCategoryPage';
+import EditCategoryPage from './pages/EditCategoryPage';
 
 //Vamos a crear un router y vamos a llamar a createBrowserRouter
 const MainLayout = () => (
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
         element: <LoginPage />, // Página de inicio (Login)
       },
       {
+        path: '/categories/create',
+        element: <CreateCategoryPage />, 
+      },
+      {
+        path: '/categories/edit/:id',
+        element: <EditCategoryPage />, 
+      },
+      {
         path: '/register',
         element: <RegisterPage />, // Página de registro
       },
@@ -47,6 +57,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+      
     ],
   },
 ]);
