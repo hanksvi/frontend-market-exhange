@@ -36,14 +36,6 @@ const router = createBrowserRouter([
         element: <LoginPage />, // Página de inicio (Login)
       },
       {
-        path: '/categories/create',
-        element: <CreateCategoryPage />, 
-      },
-      {
-        path: '/categories/edit/:id',
-        element: <EditCategoryPage />, 
-      },
-      {
         path: '/register',
         element: <RegisterPage />, // Página de registro
       },
@@ -52,12 +44,24 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />, // Ruta protegida
         children: [
           {
-            path: '',
-            element: <Dashboard />, // Dashboard protegido
+            path: '', // Ruta raíz del dashboard "/dashboard"
+            element: <Dashboard />, // Componente principal del dashboard
+          },
+          {
+            path: 'category', // Prefijo para todas las rutas de categorías "/dashboard/categories"
+            children: [
+              {
+                path: 'create', // Ruta "/dashboard/categories/create"
+                element: <CreateCategoryPage />,
+              },
+              {
+                path: 'edit/:id', // Ruta "/dashboard/categories/edit/:id"
+                element: <EditCategoryPage />,
+              },
+            ],
           },
         ],
       },
-      
     ],
   },
 ]);
