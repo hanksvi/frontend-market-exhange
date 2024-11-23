@@ -12,15 +12,19 @@ export default function Navbar() {
         <nav className="flex justify-between items-center bg-gray-800 text-white p-4">
             {/* Sección izquierda del navbar */}
             <div className="flex space-x-4">
-                <a href="/publicacion" className="hover:text-gray-300">
-                    Publicar
-                </a>
-                <a href="/category" className="hover:text-gray-300">
-                    Categorias
-                </a>
-                <a href="/help" className="hover:text-gray-300">
-                    Ayuda
-                </a>
+                {auth.isAuthenticated && (
+                    <>
+                        <a href="/publicacion" className="hover:text-gray-300">
+                            Publicar
+                        </a>
+                        <a href="/category" className="hover:text-gray-300">
+                            Categorías
+                        </a>
+                        <a href="/help" className="hover:text-gray-300">
+                            Ayuda
+                        </a>
+                    </>
+                )}
             </div>
             
             {/* Sección derecha del navbar */}
