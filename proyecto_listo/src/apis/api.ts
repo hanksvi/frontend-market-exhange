@@ -1,8 +1,4 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  RawAxiosRequestHeaders,
-} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from "axios";
 
 export default class Api {
   private static _instance: Api | null = null;
