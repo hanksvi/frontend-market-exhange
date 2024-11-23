@@ -12,5 +12,9 @@ export default function ProtectedRoute(){
     }
 
     //return isAuth   ? <Outlet /> : <Navigate to="/"/>;
-    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/"/>
+    if (auth.isAuthenticated === undefined) {
+        return <div>Loading...</div>;
+    }
+    
+    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }

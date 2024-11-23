@@ -19,7 +19,7 @@ export default function RegisterPage() {
     async function handleRegisterSubmit(data: RegisterRequest) {
         try {
             await register(data);
-            navigate("/");
+            navigate("/login");
         } catch {
             alert("Error al registrar. Inténtalo de nuevo.");
         }
