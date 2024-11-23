@@ -43,7 +43,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setAccessToken(null);
         localStorage.removeItem("accessToken");
         setIsAuthenticated(false);
-        console.log("Después de logout:", isAuthenticated);
     }
     
 
