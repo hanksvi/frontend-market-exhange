@@ -1,7 +1,8 @@
 import { ItemResponse } from "@interfaces/item/ItemResponse";
 
 export interface CategoryResponse{
-     name: string;
+    id: number;
+    name: string;
     description: string;
     items: ItemResponse[];
 }

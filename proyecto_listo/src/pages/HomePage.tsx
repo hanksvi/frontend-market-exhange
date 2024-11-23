@@ -11,8 +11,11 @@ import personas from "../img/personas.jpg";
 import momo from "../img/momo.jpg";
 import celular from "../img/celu.jpg";
 import instagramIcon from "../img/instagram-new.png";
+import { useAuth } from "../context/AuthProvider";
+import { Navigate } from "react-router-dom";
 
 export default function HomePage() {
+  const auth = useAuth();
   useEffect(() => {
     const altura = document.body.scrollHeight - window.innerHeight;
     const fondo = document.getElementById("fondo");
@@ -28,6 +31,7 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if(!auth.isAuthenticated){
   return (
     <div>
       {/* Header */}
@@ -136,4 +140,8 @@ export default function HomePage() {
       </footer>
     </div>
   );
+}
+else{
+  return <Navigate to="/dashboard" />
+}
 }
