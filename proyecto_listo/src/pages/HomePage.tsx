@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
-import logo from "../img/logo.jpeg"
+import logo from "../img/logo_market.png"
 import joya2 from "../img/products/joya2.jpeg";
 import joya from "../img/products/joya.jpeg";
 import joya4 from "../img/products/joya4.jpeg";
-import joya5 from "../img/products/joya5.jpeg";
+import joya5 from "../img/foto_1.jpg";
 import joya3 from "../img/products/joya3.jpeg";
 import joya6 from "../img/products/joya6.jpeg";
 import joya10 from "../img/products/joya10.jpeg";
 import personas from "../img/personas.jpg";
 import momo from "../img/momo.jpg";
+import celular from "../img/celu.jpg";
 import instagramIcon from "../img/instagram-new.png";
 
 export default function HomePage() {
@@ -31,7 +32,7 @@ export default function HomePage() {
     <div>
       {/* Header */}
       <div className="contenido-header relative h-screen bg-cover bg-center" style={{ backgroundImage: `url(${logo})` }}>
-        <div id="fondo" className="fondo absolute top-0 left-0 h-full bg-purple-900 w-0 transition-all"></div>
+        <div id="fondo" className="fondo absolute"></div>
       </div>
 
       {/* Navigation */}
@@ -46,21 +47,21 @@ export default function HomePage() {
         {/* Nosotros */}
         <section className="text-center mb-16">
           <h2 className="subtitulo text-lg font-bold uppercase text-purple-800 bg-gray-200 inline-block px-4 py-2 mb-4">¿Quiénes somos?</h2>
-          <h3 className="titulo text-3xl font-semibold text-gray-900">Somos parte de tu momento especial</h3>
+          <h3 className="titulo text-3xl font-semibold text-gray-900">Somos el puente hacia un mundo más sostenible y humano</h3>
           <p className="mt-4 text-lg text-gray-700">
-            Descubre la elegancia con nuestros joyeros artesanales y joyas de acero.<br />
-            Cada pieza es un viaje de creatividad y artesanía, diseñada para capturar tu estilo único.<br />
-            ¡Ven y encuentra tu brillo con nosotros!
+          En nuestra plataforma de trueque, cada intercambio es una historia, un gesto de consciencia y una oportunidad de darle nueva vida a lo que ya no usas.<br />
+          Creemos en el valor de las cosas más allá del dinero, en la conexión entre personas y en un planeta con menos desperdicio.<br />
+          ¡Únete a nosotros y sé parte del cambio!
           </p>
         </section>
 
         {/* Productos */}
         <section id="productos" className="productos bg-gray-100 py-10">
           <h2 className="subtitulo text-lg font-bold uppercase text-purple-800 bg-gray-200 inline-block px-4 py-2 mb-4">Nuestro catálogo</h2>
-          <h3 className="titulo text-3xl font-semibold text-gray-900 text-center">Nuestros Productos</h3>
+          <h3 className="titulo text-3xl font-semibold text-gray-900 text-center">Aquí, cada objeto cuenta una historia y espera ser parte de la tuya.</h3>
           <p className="text-center mt-4 text-lg text-gray-700">
-            En nuestra tienda, cada producto tiene un toque único y personal. <br />
-            ¡Explora nuestra colección y descubre la joya que te está esperando!
+          Descubre un mundo donde todo tiene valor. Explora nuestra colección y encuentra ese artículo único que transformará tus momentos. <br />
+          ¡Intercambia. Reutiliza. Revoluciona!
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
@@ -78,7 +79,6 @@ export default function HomePage() {
 
       {/* Separador */}
       <section className="separador bg-cover bg-center h-64 text-center flex items-center justify-center text-gray-900" style={{ backgroundImage: `url(${joya5})` }}>
-        <p className="text-2xl italic">"Brilla con estilo, brilla con nosotros"</p>
       </section>
 
       {/* Acerca de */}
@@ -89,8 +89,8 @@ export default function HomePage() {
               <img src={personas} alt="Grupo de especialistas" />
               <figcaption>
                 <p>
-                  <strong className="mb-5">Grupo de especialistas</strong><br />
-                  Nuestro equipo de especialistas, dedicados a seleccionar y crear las joyas más exquisitas para ti.
+                  <strong className="mb-5">Grupo de apasionados por el cambio</strong><br />
+                  Nuestro equipo está dedicado a conectar personas, seleccionar los mejores artículos para el trueque y fomentar un mundo más sostenible y humano para todos.
                 </p>
               </figcaption>
             </figure>
@@ -101,7 +101,8 @@ export default function HomePage() {
               <figcaption>
                 <p>
                   <strong className="mb-5">Un relato de servicio</strong><br />
-                  Nuestra historia está marcada por un compromiso inquebrantable con el servicio.
+                  Nuestra historia es un reflejo de nuestra pasión por transformar lo ordinario en extraordinario.
+                  Cada intercambio que facilitamos está marcado por nuestro compromiso inquebrantable con la calidad, la conexión y el impacto positivo en el mundo.
                 </p>
               </figcaption>
             </figure>
@@ -122,8 +123,8 @@ export default function HomePage() {
       <section id="contacto" className="contacto bg-gray-100 py-10 text-center">
         <h2 className="subtitulo text-lg font-bold uppercase text-purple-800 bg-gray-200 inline-block px-4 py-2 mb-4">Contáctanos</h2>
         <p className="text-lg text-gray-700">
-          <img src="../img/celu.jpg" alt="Teléfono" className="inline-block w-6 h-6 mr-2" />
-          Tel: 970503563
+          <img src={celular} alt="Teléfono" className="inline-block w-12 h-6 mr-1" />
+          Tel: 966462221
         </p>
       </section>
 
