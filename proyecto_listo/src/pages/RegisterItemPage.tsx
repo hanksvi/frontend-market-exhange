@@ -8,8 +8,6 @@ function RegisterItemPage() {
     };
 
 
-
-
     function handleSuccess(response: any) {
         console.log("Ítem registrado:", response);
     }
