@@ -1,5 +1,6 @@
 package com.dbp.proyectobackendmarketexchange.item.domain;
 
+
 import com.dbp.proyectobackendmarketexchange.auth.utils.AuthorizationUtils;
 import com.dbp.proyectobackendmarketexchange.category.domain.Category;
 import com.dbp.proyectobackendmarketexchange.category.infrastructure.CategoryRepository;
@@ -227,11 +228,19 @@ public class ItemService {
         responseDto.setStatus(item.getStatus());
         responseDto.setCreatedAt(item.getCreatedAt());
 
+
         if (item.getUsuario() != null && item.getUsuario().getEmail() != null) {
             responseDto.setUserName(item.getUsuario().getEmail());
         } else {
             responseDto.setUserName("Usuario desconocido");
         }
+
+        if (item.getUsuario() != null && item.getUsuario().getId() != null) {
+            responseDto.setUser_id(item.getUsuario().getId());
+        } else {
+            responseDto.setUserName("Usuario desconocido");
+        }
+
 
         if (item.getCategory() != null && item.getCategory().getName() != null) {
             responseDto.setCategoryName(item.getCategory().getName());

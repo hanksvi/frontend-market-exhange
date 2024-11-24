@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/item/user/{userId}").hasAuthority("USER")
                         .requestMatchers(HttpMethod.GET, "/item/mine").hasAuthority("USER")
                         .requestMatchers(HttpMethod.GET, "/item/{id}").hasAuthority("USER")
+                        .requestMatchers(HttpMethod.GET, "/item").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/item/{id}/image").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/item").hasAnyAuthority("USER", "ADMIN")
 
@@ -88,10 +89,12 @@ public class SecurityConfig {
 
                         // Acceso de USER a agreements
                         .requestMatchers(HttpMethod.POST, "/agreements").hasAuthority("USER")
-                        .requestMatchers(HttpMethod.PUT, "/agreements/{id}/accept").hasAuthority("USER")
-                        .requestMatchers(HttpMethod.PUT, "/agreements/{id}/reject").hasAuthority("USER")
+                        .requestMatchers(HttpMethod.GET, "/agreements/{id}").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/agreements").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/agreements/{id}/accept").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/agreements/{id}/reject").hasAnyAuthority("USER", "ADMIN")
                         // Acceso de ADMIN a agreements
-                        .requestMatchers(HttpMethod.GET, "/agreements/{id}").hasAuthority("ADMIN")
+
                         .requestMatchers(HttpMethod.DELETE, "/agreements/{id}").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/agreements/{id}").hasAuthority("ADMIN")
 

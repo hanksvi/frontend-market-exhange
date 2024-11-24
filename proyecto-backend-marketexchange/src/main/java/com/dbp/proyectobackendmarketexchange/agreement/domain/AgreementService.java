@@ -59,8 +59,10 @@ public class AgreementService {
                     // Seteamos manualmente las propiedades adicionales
                     responseDto.setItemFinName(agreement.getItem_fin().getName());  // Nombre del item final
                     responseDto.setItemIniName(agreement.getItem_ini().getName());  // Nombre del item inicial
-                    responseDto.setUserNameFin(agreement.getRecipient().getEmail());  // Email del receptor
-                    responseDto.setUserNameIni(agreement.getInitiator().getEmail());  // Email del iniciador
+                    responseDto.setId_Fin(agreement.getRecipient().getId());  // Email del receptor
+                    responseDto.setId_Ini(agreement.getInitiator().getId());  // Email del iniciador
+                    responseDto.setIniUsername(agreement.getInitiator().getEmail());
+                    responseDto.setFinUsername(agreement.getRecipient().getEmail());
 
                     return responseDto;
                 })
@@ -70,9 +72,6 @@ public class AgreementService {
     @Transactional
     public AgreementResponseDto createAgreement(AgreementRequestDto agreementRequestDto) {
 
-        if (agreementRequestDto.getState() != State.PENDING) {
-            throw new IllegalArgumentException("No se puede crear un acuerdo directamente en estado ACCEPTED o REJECTED");
-        }
 
         Agreement agreement = new Agreement();
 
@@ -96,7 +95,7 @@ public class AgreementService {
         agreement.setRecipient(usuarioFin);
 
 
-        agreement.setState(agreementRequestDto.getState());
+        agreement.setState(State.PENDING);
 
 
         Agreement savedAgreement = agreementRepository.save(agreement);
@@ -109,8 +108,10 @@ public class AgreementService {
         AgreementResponseDto responseDto = modelMapper.map(savedAgreement, AgreementResponseDto.class);
         responseDto.setItemFinName(itemFin.getName());
         responseDto.setItemIniName(itemIni.getName());
-        responseDto.setUserNameFin(usuarioFin.getEmail());
-        responseDto.setUserNameIni(usuarioIni.getEmail());
+        responseDto.setId_Ini(usuarioIni.getId());
+        responseDto.setId_Fin(usuarioFin.getId());
+        responseDto.setFinUsername(usuarioFin.getEmail());
+        responseDto.setIniUsername(usuarioIni.getEmail());
 
         return responseDto;
     }
@@ -125,8 +126,10 @@ public class AgreementService {
         responseDto.setState(agreement.getState());
         responseDto.setItemIniName(agreement.getItem_ini().getName());
         responseDto.setItemFinName(agreement.getItem_fin().getName());
-        responseDto.setUserNameIni(agreement.getInitiator().getEmail());
-        responseDto.setUserNameFin(agreement.getRecipient().getEmail());
+        responseDto.setId_Ini(agreement.getInitiator().getId());
+        responseDto.setId_Fin(agreement.getRecipient().getId());
+        responseDto.setFinUsername(agreement.getRecipient().getEmail());
+        responseDto.setIniUsername(agreement.getInitiator().getEmail());
 
         return responseDto;
     }
@@ -157,8 +160,10 @@ public class AgreementService {
         AgreementResponseDto responseDto = modelMapper.map(savedAgreement, AgreementResponseDto.class);
         responseDto.setItemFinName(savedAgreement.getItem_fin().getName());
         responseDto.setItemIniName(savedAgreement.getItem_ini().getName());
-        responseDto.setUserNameFin(savedAgreement.getRecipient().getEmail());
-        responseDto.setUserNameIni(savedAgreement.getInitiator().getEmail());
+        responseDto.setId_Ini(savedAgreement.getInitiator().getId());
+        responseDto.setId_Fin(savedAgreement.getRecipient().getId());
+        responseDto.setFinUsername(savedAgreement.getRecipient().getEmail());
+        responseDto.setIniUsername(savedAgreement.getInitiator().getEmail());
 
         return responseDto;
     }
@@ -188,8 +193,10 @@ public class AgreementService {
         AgreementResponseDto responseDto = modelMapper.map(savedAgreement, AgreementResponseDto.class);
         responseDto.setItemFinName(savedAgreement.getItem_fin().getName());
         responseDto.setItemIniName(savedAgreement.getItem_ini().getName());
-        responseDto.setUserNameFin(savedAgreement.getRecipient().getEmail());
-        responseDto.setUserNameIni(savedAgreement.getInitiator().getEmail());
+        responseDto.setId_Ini(savedAgreement.getRecipient().getId());
+        responseDto.setId_Fin(savedAgreement.getInitiator().getId());
+        responseDto.setFinUsername(savedAgreement.getRecipient().getEmail());
+        responseDto.setIniUsername(savedAgreement.getInitiator().getEmail());
 
         return responseDto;
     }
@@ -209,8 +216,10 @@ public class AgreementService {
         modelMapper.map(existingAgreement, responseDto);
         responseDto.setItemFinName(existingAgreement.getItem_fin().getName());
         responseDto.setItemIniName(existingAgreement.getItem_ini().getName());
-        responseDto.setUserNameFin(existingAgreement.getRecipient().getEmail());
-        responseDto.setUserNameIni(existingAgreement.getInitiator().getEmail());
+        responseDto.setId_Ini(existingAgreement.getInitiator().getId());
+        responseDto.setId_Fin(existingAgreement.getRecipient().getId());
+        responseDto.setIniUsername(existingAgreement.getInitiator().getEmail());
+        responseDto.setFinUsername(existingAgreement.getRecipient().getEmail());
         return responseDto;
     }
 

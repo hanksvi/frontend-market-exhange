@@ -26,7 +26,7 @@ import jakarta.persistence.*;
 
         @NotNull(message = "El estado no puede ser nulo")
         @Enumerated(EnumType.STRING)
-        private State state;
+        private State state = State.PENDING;
     
 
 

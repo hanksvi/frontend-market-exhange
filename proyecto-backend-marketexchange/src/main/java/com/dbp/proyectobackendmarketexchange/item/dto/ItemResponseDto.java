@@ -32,5 +32,7 @@ public class ItemResponseDto {
 
     private String imageUrl;
 
+    private Long user_id;
+
 
 }

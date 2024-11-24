@@ -11,10 +11,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class AgreementRequestDto {
 
-    @NotNull(message = "El estado no puede ser nulo")
-    private State state;
-
-
     @NotNull(message = "El objeto ofrecido por el iniciador no puede ser nulo")
     private Long itemIniId;
 

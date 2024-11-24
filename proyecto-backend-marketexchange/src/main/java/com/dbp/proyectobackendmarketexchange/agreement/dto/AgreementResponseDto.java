@@ -12,6 +12,8 @@ import lombok.Getter;
         private State state;
         private String itemIniName;
         private String itemFinName;
-        private String userNameIni;
-        private String userNameFin;
+        private String iniUsername;
+        private String finUsername;
+        private Long id_Ini;
+        private Long id_Fin;
     }
