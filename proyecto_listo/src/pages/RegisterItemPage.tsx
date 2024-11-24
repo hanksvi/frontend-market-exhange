@@ -1,6 +1,6 @@
 import ItemForm from "../components/ItemForm";
 
-function App() {
+function RegisterItemPage() {
     const initialData = {
         name: "",
         description: "",
@@ -29,4 +29,4 @@ function App() {
     );
 }
 
-export default App;
+export default RegisterItemPage;

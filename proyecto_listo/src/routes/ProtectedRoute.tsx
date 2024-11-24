@@ -7,14 +7,10 @@ export default function ProtectedRoute(){
 */
     const auth = useAuth();
 
-    if (auth.isAuthenticated === undefined) {
-        return <div>Loading...</div>;
-    }
-
     //return isAuth   ? <Outlet /> : <Navigate to="/"/>;
     if (auth.isAuthenticated === undefined) {
         return <div>Loading...</div>;
     }
-    
+
     return auth.isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }

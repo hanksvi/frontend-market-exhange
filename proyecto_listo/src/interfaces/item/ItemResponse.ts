@@ -3,7 +3,7 @@ export interface ItemResponse{
     name: string;
     description: string;
     categoryName: string;
-    condition:  "PENDING" | "APPROVED" | "REJECTED";
+    condition: Condition;
 
     userName: string;
     
