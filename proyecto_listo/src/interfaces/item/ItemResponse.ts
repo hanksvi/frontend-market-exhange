@@ -3,10 +3,13 @@ export interface ItemResponse{
     name: string;
     description: string;
     categoryName: string;
-    condition: "NEW" | "USED";
+    condition: Condition;
     userName: string;
-    createdAt: string;
-    status: "PENDING" | "APPROVED" | "REJECTED";
-    imageUrl: String;
     
+}
+
+export enum Condition{
+    PENDING = "PENDING",
+    APPROVED = "APPROVED",
+    REJECTED = "REJECTED",
 }
