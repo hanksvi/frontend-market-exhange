@@ -1,59 +1,50 @@
-import Api from '../../apis/api';
-import { UsuarioRequestDto } from '../../interfaces/usuario/UsuarioRequestDto';
-import { UsuarioResponseDto } from '../../interfaces/usuario/UsuarioResponseDto';
+import { UsuarioResponseDto } from "@interfaces/usuario/UsuariosResponseDto.ts";
+import { UsuarioRequestDto } from "@interfaces/usuario/UsuarioRequestDto.ts";
+import Api from "../../apis/api.ts";
 
-export const usuarioService = {
-    /**
-     * Obtiene un usuario por su ID.
-     * @param id ID del usuario a buscar.
-     * @returns UsuarioResponseDto
-     */
-    async getUsuarioById(id: number): Promise<UsuarioResponseDto> {
+export const usuario = {
+    // Obtener un usuario por ID
+    async obtenerUsuarioPorId(id: number): Promise<UsuarioResponseDto> {
         const api = await Api.getInstance();
-        const response = await api.get<void, UsuarioResponseDto>({ url: `/usuarios/${id}` });
-        return response.data;
-    },
-
-    /**
-     * Lista todos los usuarios.
-     * @returns Array de UsuarioResponseDto
-     */
-    async listarUsuarios(): Promise<UsuarioResponseDto[]> {
-        const api = await Api.getInstance();
-        const response = await api.get<void, UsuarioResponseDto[]>({ url: '/usuarios/listar' });
-        return response.data;
-    },
-
-    /**
-     * Actualiza un usuario existente.
-     * @param id ID del usuario a actualizar.
-     * @param data Datos para actualizar el usuario.
-     * @returns UsuarioResponseDto
-     */
-    async actualizarUsuario(id: number, data: UsuarioRequestDto): Promise<UsuarioResponseDto> {
-        const api = await Api.getInstance();
-        const response = await api.put<UsuarioRequestDto, UsuarioResponseDto>(data, {
-            url: `/usuarios/${id}`,
+        const response = await api.get<void, UsuarioResponseDto>({
+            url: `/usuarios/${id}`, // Usar backticks
         });
         return response.data;
     },
 
-    /**
-     * Elimina un usuario por su ID.
-     * @param id ID del usuario a eliminar.
-     */
-    async eliminarUsuario(id: number): Promise<void> {
+    // Listar todos los usuarios
+    async listarUsuarios(): Promise<UsuarioResponseDto[]> {
         const api = await Api.getInstance();
-        await api.delete({ url: `/usuarios/${id}` });
+        const response = await api.get<void, UsuarioResponseDto[]>({
+            url: "/usuarios/listar",
+        });
+        return response.data;
     },
 
-    /**
-     * Obtiene información del usuario autenticado (propio).
-     * @returns UsuarioResponseDto
-     */
+    // Actualizar un usuario
+    async actualizarUsuario(id: number, data: UsuarioRequestDto): Promise<UsuarioResponseDto> {
+        const api = await Api.getInstance();
+        const response = await api.put<UsuarioRequestDto, UsuarioResponseDto>(data, {
+            url: `/usuarios/${id}`, // Usar backticks
+        });
+        return response.data;
+    },
+
+    // Eliminar un usuario
+    async eliminarUsuario(id: number): Promise<void> {
+        const api = await Api.getInstance();
+        await api.delete({
+            url: `/usuarios/${id}`, // Usar backticks
+        });
+    },
+
+    // Obtener información del usuario autenticado
     async getMyInfo(): Promise<UsuarioResponseDto> {
         const api = await Api.getInstance();
-        const response = await api.get<void, UsuarioResponseDto>({ url: '/usuarios/me' });
+        const response = await api.get<void, UsuarioResponseDto>({
+            url: "/usuarios/me",
+        });
         return response.data;
     },
 };
+

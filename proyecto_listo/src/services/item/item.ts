@@ -1,6 +1,7 @@
 import Api from "../../apis/api";
 import { ItemRequest } from '../../interfaces/item/ItemRequest';
 import { ItemResponse } from '../../interfaces/item/ItemResponse';
+import axios from 'axios';
 
 export const item = {
     async getAllItems(): Promise<ItemResponse[]> {
@@ -15,9 +16,11 @@ export const item = {
       return response.data;
     },
   
-    async createItem(data: ItemRequest): Promise<ItemResponse> {
+    async createItem(data: FormData): Promise<ItemResponse> {
       const api = await Api.getInstance();
-      const response = await api.post<ItemRequest, ItemResponse>(data, { url: '/item' });
+      const response = await api.post<FormData, ItemResponse>(data, {
+          url: '/item',
+      });
       return response.data;
     },
   

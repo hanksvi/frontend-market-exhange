@@ -11,6 +11,7 @@ export default function Navbar() {
     const closeDropdown = () => setIsDropdownOpen(false);
 
     //psuhwa ps
+    
     return (
         <nav className="flex justify-between items-center bg-gray-800 text-white p-4">
             {/* Sección izquierda del navbar */}

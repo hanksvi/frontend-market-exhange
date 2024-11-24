@@ -1,8 +1,10 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { ItemRequest } from "../interfaces/item/ItemRequest";
-import { item } from '../services/item/item';
-import { category } from "../services/category/category"; // Importa el servicio de categorías
+import { item } from "../services/item/item";
+import { category } from "../services/category/category";
+import { usuario } from "../services/user/user"; // Importa el servicio de usuario
 import { CategoryResponse } from "../interfaces/category/CategoryResponse";
+
 
 interface ItemFormProps {
     initialData: Omit<ItemRequest, "user_id" | "category_id">; // No incluir user_id ni category_id
@@ -18,9 +20,11 @@ export default function ItemForm({
     const [formData, setFormData] = useState<Omit<ItemRequest, "user_id" | "category_id">>(
         initialData
     );
-    const [categories, setCategories] = useState<CategoryResponse[]>([]); // Estado para las categoría
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // Categoría seleccionada
+    const [categories, setCategories] = useState<CategoryResponse[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [userId, setUserId] = useState<number | null>(null); // Estado para almacenar el ID del usuario
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     // Cargar categorías al montar el componente
     useEffect(() => {
@@ -30,14 +34,32 @@ export default function ItemForm({
                 setCategories(categoryList);
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                    setErrorMessage(error.message);
+                    setErrorMessage(`Error al cargar categorías: ${error.message}`);
                 } else {
-                    setErrorMessage("Error desconocido.");
+                    setErrorMessage("Error desconocido al cargar categorías.");
                 }
             }
         }
 
-        fetchCategories().catch(console.error); // Maneja promesas no resueltas
+        fetchCategories().catch(console.error);
+    }, []);
+
+    // Obtener el ID del usuario al montar el componente
+    useEffect(() => {
+        async function fetchUserId() {
+            try {
+                const userInfo = await usuario.getMyInfo();
+                setUserId(userInfo.id); // Establece el ID del usuario en el estado
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setErrorMessage(`Error al obtener información del usuario: ${error.message}`);
+                } else {
+                    setErrorMessage("Error desconocido al obtener información del usuario.");
+                }
+            }
+        }
+
+        fetchUserId().catch(console.error);
     }, []);
 
     function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -52,6 +74,12 @@ export default function ItemForm({
         setSelectedCategory(Number(e.target.value));
     }
 
+    function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files[0]) {
+            setImageFile(e.target.files[0]);
+        }
+    }
+
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setErrorMessage(null);
@@ -61,15 +89,28 @@ export default function ItemForm({
             return;
         }
 
+        if (!userId) {
+            setErrorMessage("No se pudo obtener el ID del usuario. Intenta iniciar sesión nuevamente.");
+            return;
+        }
+
         try {
-            const response = await item.createItem({
-                ...formData,
-                category_id: selectedCategory,
-            } as ItemRequest);
+            const formDataToSend = new FormData();
+            formDataToSend.append("name", formData.name);
+            formDataToSend.append("description", formData.description);
+            formDataToSend.append("category_id", selectedCategory.toString());
+            formDataToSend.append("user_id", userId.toString());
+            formDataToSend.append("condition", formData.condition);
+    
+            if (imageFile) {
+                formDataToSend.append("image", imageFile);
+            }
+    
+            const response = await item.createItem(formDataToSend);
             onSubmitSuccess(response);
         } catch (error: unknown) {
             if (error instanceof Error) {
-                setErrorMessage(error.message);
+                setErrorMessage(`Error al registrar el ítem: ${error.message}`);
             } else {
                 setErrorMessage("Error desconocido al registrar el ítem.");
             }
@@ -152,6 +193,17 @@ export default function ItemForm({
                     </select>
                 </div>
 
+                <div className="mb-4">
+                    <input
+                        type="file"
+                        name="image"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full"
+                    />
+                </div>
+
                 <button
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none"
@@ -162,3 +214,6 @@ export default function ItemForm({
         </section>
     );
 }
+
+
+

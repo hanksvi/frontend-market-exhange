@@ -1,9 +1,11 @@
-import axios, { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from "axios";
+// src/apis/api.ts
+
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export default class Api {
   private static _instance: Api | null = null;
 
-  private _basePath: string;
+  private _axiosInstance: AxiosInstance;
 
   private _authorization: string | null;
 
@@ -11,10 +13,24 @@ export default class Api {
     this._authorization = value;
   }
 
-  
   private constructor(basePath: string, authorization: string | null) {
-    this._basePath = basePath;
-    this._authorization = authorization || localStorage.getItem("jwtToken");
+    this._authorization = authorization || localStorage.getItem("jwtToken") || null;
+
+    this._axiosInstance = axios.create({
+      baseURL: basePath,
+      // No establezcas 'Content-Type' aquí
+    });
+
+    // Interceptor para agregar la autorización a cada solicitud
+    this._axiosInstance.interceptors.request.use(
+      (config) => {
+        if (this._authorization) {
+          config.headers.Authorization = `Bearer ${this._authorization}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
   }
 
   public static async getInstance() {
@@ -28,20 +44,15 @@ export default class Api {
   }
 
   public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
-    const headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
-      Authorization: this._authorization ? `Bearer ${this._authorization}` : "",
-    };
+    // No establecer 'Content-Type' aquí; Axios lo manejará automáticamente
+    // Especialmente importante para FormData, donde el 'boundary' es necesario
 
     const configOptions: AxiosRequestConfig = {
       ...config,
-      baseURL: this._basePath,
-      headers: headers,
+      // baseURL ya está establecido en el axiosInstance
     };
 
-    const path = this._basePath + config.url;
-
-    return axios<RequestType, AxiosResponse<ResponseType>>(path, configOptions);
+    return this._axiosInstance.request<ResponseType>(configOptions);
   }
 
   public get<RequestType, ResponseType>(config: AxiosRequestConfig) {
@@ -54,8 +65,8 @@ export default class Api {
   }
 
   public post<RequestBodyType, ResponseBodyType>(
-      data: RequestBodyType,
-      options: AxiosRequestConfig,
+    data: RequestBodyType,
+    options: AxiosRequestConfig
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
@@ -76,8 +87,8 @@ export default class Api {
   }
 
   public put<RequestBodyType, ResponseBodyType>(
-      data: RequestBodyType,
-      options: AxiosRequestConfig,
+    data: RequestBodyType,
+    options: AxiosRequestConfig
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
@@ -89,8 +100,8 @@ export default class Api {
   }
 
   public patch<RequestBodyType, ResponseBodyType>(
-      data: RequestBodyType,
-      options: AxiosRequestConfig,
+    data: RequestBodyType,
+    options: AxiosRequestConfig
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
