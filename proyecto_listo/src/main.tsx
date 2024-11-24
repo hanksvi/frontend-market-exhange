@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import EditCategoryPage from './pages/EditCategoryPage';
+import RegisterItemPage from './pages/RegisterItemPage';
 
 //Vamos a crear un router y vamos a llamar a createBrowserRouter
 const MainLayout = () => (
@@ -29,15 +30,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: '', // Ruta raíz "/"
-        element: <HomePage />, // Página de inicio
+        element: <HomePage />,
       },
       {
         path: '/login',
-        element: <LoginPage />, // Página de inicio (Login)
+        element: <LoginPage />,
       },
       {
         path: '/register',
-        element: <RegisterPage />, // Página de registro
+        element: <RegisterPage />,
       },
       {
         path: '/dashboard',
@@ -45,21 +46,29 @@ const router = createBrowserRouter([
         children: [
           {
             path: '', // Ruta raíz del dashboard "/dashboard"
-            element: <Dashboard />, // Componente principal del dashboard
+            element: <Dashboard />,
           },
           {
-            path: 'category', // Prefijo para todas las rutas de categorías "/dashboard/categories"
+            path: 'category',
             children: [
               {
-                path: 'create', // Ruta "/dashboard/categories/create"
+                path: 'create', // Ruta "/dashboard/category/create"
                 element: <CreateCategoryPage />,
               },
               {
-                path: 'edit/:id', // Ruta "/dashboard/categories/edit/:id"
+                path: 'edit/:id', // Ruta "/dashboard/category/edit/:id"
                 element: <EditCategoryPage />,
               },
             ],
           },
+          {
+            path: 'item',
+            children:[
+              {path: 'create',
+              element: <RegisterItemPage />
+            },
+            ]
+          }
         ],
       },
     ],

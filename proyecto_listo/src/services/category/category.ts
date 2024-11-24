@@ -35,4 +35,4 @@ export const category = {
       const api = await Api.getInstance();
       await api.delete({ url: `/category/${id}` });
     },
-  };
+};
