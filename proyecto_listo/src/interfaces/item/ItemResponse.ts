@@ -5,7 +5,7 @@ export interface ItemResponse{
     categoryName: string;
     condition: Condition;
     userName: string;
-    
+    imageUrl: string;
 }
 
 export enum Condition{

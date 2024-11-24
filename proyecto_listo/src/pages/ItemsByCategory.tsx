@@ -4,44 +4,42 @@ import { ItemResponse } from "../interfaces/item/ItemResponse";
 import { item } from "../services/item/item"; // Usa el servicio de ítems
 
 export default function CategoryItemsPage() {
-  const { id } = useParams<{ id: string }>(); // Obtiene el ID de la categoría desde la URL
+  const { id } = useParams<{ id: string }>();
   const [items, setItems] = useState<ItemResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchCategoryItems = async () => {
-      try {
-        const itemsData = await item.getItemsByCategory(Number(id)); // Obtiene los ítems de la categoría
-        setItems(itemsData); // Establece los ítems de la categoría
-      } catch (error) {
-        console.error("Error al obtener los ítems de la categoría:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const fetchItems = async () => {
+          try {
+              const itemsData = await item.getItemsByCategory(Number(id));
+              setItems(itemsData);
+          } catch (error) {
+              console.error("Error al obtener ítems:", error);
+          } finally {
+              setLoading(false);
+          }
+      };
 
-    fetchCategoryItems();
+      fetchItems();
   }, [id]);
 
-  if (loading) {
-    return <div>Cargando ítems...</div>; // Muestra un mensaje de carga
-  }
+  if (loading) return <div>Cargando ítems...</div>;
 
-  if (!items.length) {
-    return <div>No hay ítems en esta categoría.</div>; // Muestra un mensaje si no hay ítems
-  }
+  if (!items.length) return <div>No hay ítems en esta categoría.</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Ítems de la Categoría</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {items.map((item) => (
-          <div key={item.id} className="bg-gray-200 p-4 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold">{item.name}</h2>
-            <p className="text-sm text-gray-600">{item.description}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+          {items.map((item) => (
+              <div key={item.id} className="bg-gray-200 p-4 rounded-lg shadow-md">
+                  <h2 className="text-lg font-semibold">{item.name}</h2>
+                  <p className="text-sm text-gray-600">{item.description}</p>
+                  <img
+                      src={`http://localhost:8080/item${item.imageUrl}/image`}
+                      alt={item.name}
+                      className="w-full h-auto mt-2"
+                  />
+              </div>
+          ))}
       </div>
-    </div>
   );
 }
