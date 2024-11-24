@@ -7,6 +7,9 @@ function App() {
         condition: "NEW",
     };
 
+
+
+
     function handleSuccess(response: any) {
         console.log("Ítem registrado:", response);
     }
