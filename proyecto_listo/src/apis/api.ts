@@ -18,13 +18,14 @@ export default class Api {
 
     this._axiosInstance = axios.create({
       baseURL: basePath,
-      // No establezcas 'Content-Type' aquí
     });
 
     // Interceptor para agregar la autorización a cada solicitud
     this._axiosInstance.interceptors.request.use(
       (config) => {
-        if (this._authorization) {
+        // Si el endpoint es de registro, no incluir Authorization
+        const isRegisterEndpoint = config.url?.includes("/auth/register");
+        if (!isRegisterEndpoint && this._authorization) {
           config.headers.Authorization = `Bearer ${this._authorization}`;
         }
         return config;
@@ -43,16 +44,9 @@ export default class Api {
     return this._instance;
   }
 
-
-
   public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
-    // No establecer 'Content-Type' aquí; Axios lo manejará automáticamente
-    // Especialmente importante para FormData, donde el 'boundary' es necesario
-
-
     const configOptions: AxiosRequestConfig = {
       ...config,
-      // baseURL ya está establecido en el axiosInstance
     };
 
     return this._axiosInstance.request<ResponseType>(configOptions);
