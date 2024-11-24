@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { usuario } from "../services/user/user"; // Servicio de usuario
-import { Agreement } from "../services/agreement/agreement"; // Servicio de acuerdos
+import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
 import { AgreementResponse } from "../interfaces/agreement/agreementResponse"; // Interfaz de respuesta de acuerdo
 
-export default function UserTrades() {
+export default function UserTradesAceppted() {
     const [trades, setTrades] = useState<AgreementResponse[]>([]); // Estado para almacenar los tradeos
     const [filteredTrades, setFilteredTrades] = useState<AgreementResponse[]>([]); // Estado para los tradeos filtrados
     const [userId, setUserId] = useState<number | null>(null); // ID del usuario autenticado

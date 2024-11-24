@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { usuario } from "../services/user/user"; // Servicio de usuario
-import { Agreement } from "../services/agreement/agreement"; // Servicio de acuerdos
+import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
 import { AgreementResponse } from "../interfaces/agreement/agreementResponse"; // Interfaz de respuesta de acuerdo
 
 export default function UserTradesAccepted() {
