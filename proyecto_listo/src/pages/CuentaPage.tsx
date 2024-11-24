@@ -51,7 +51,6 @@ export default function CuentaPage() {
 
                         {activeTab === "items" && (
                             <>
-                                <h2 className="text-2xl font-bold text-gray-700 mb-4">Mis Ítems Publicados</h2>
                                 <UserItems /> {/* Componente para mostrar los ítems del usuario */}
                             </>
                         )}
