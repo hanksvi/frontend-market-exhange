@@ -16,7 +16,7 @@ import RegisterItemPage from './pages/RegisterItemPage';
 import CuentaPage from "./pages/CuentaPage.tsx";
 import AllCategoryPage from './pages/AllCategoryPage';
 import ItemsByCategory from './pages/ItemsByCategory';
-
+import AgreementPage from "./pages/AgreementPage.tsx"
 
 //Vamos a crear un router y vamos a llamar a createBrowserRouter
 const MainLayout = () => (
@@ -80,6 +80,10 @@ const router = createBrowserRouter([
               element: <RegisterItemPage />
             },
             ]
+          },
+          {
+            path: 'agreements/:id',
+            element: <AgreementPage />
           },
           {
             path: 'cuenta', // Nueva ruta "/dashboard/cuenta"

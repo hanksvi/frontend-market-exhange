@@ -56,6 +56,7 @@ export const item = {
     async getItemsByUser(userId: number): Promise<ItemResponse[]> {
       const api = await Api.getInstance();
       const response = await api.get<void, ItemResponse[]>({ url: `/item/user/${userId}` });
+      console.log(userId)
       return response.data;
     },
   };
