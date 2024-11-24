@@ -1,7 +1,8 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { ItemRequest } from "../interfaces/item/ItemRequest";
-import { item } from '../services/item/item';
-import { category } from "../services/category/category"; // Importa el servicio de categorías
+import { item } from "../services/item/item";
+import { category } from "../services/category/category";
+import { usuario } from "../services/user/user"; // Importa el servicio de usuario
 import { CategoryResponse } from "../interfaces/category/CategoryResponse";
 
 interface ItemFormProps {
@@ -18,8 +19,9 @@ export default function ItemForm({
     const [formData, setFormData] = useState<Omit<ItemRequest, "user_id" | "category_id">>(
         initialData
     );
-    const [categories, setCategories] = useState<CategoryResponse[]>([]); // Estado para las categoría
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // Categoría seleccionada
+    const [categories, setCategories] = useState<CategoryResponse[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [userId, setUserId] = useState<number | null>(null); // Estado para almacenar el ID del usuario
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Cargar categorías al montar el componente
@@ -30,14 +32,32 @@ export default function ItemForm({
                 setCategories(categoryList);
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                    setErrorMessage(error.message);
+                    setErrorMessage(`Error al cargar categorías: ${error.message}`);
                 } else {
-                    setErrorMessage("Error desconocido.");
+                    setErrorMessage("Error desconocido al cargar categorías.");
                 }
             }
         }
 
-        fetchCategories().catch(console.error); // Maneja promesas no resueltas
+        fetchCategories().catch(console.error);
+    }, []);
+
+    // Obtener el ID del usuario al montar el componente
+    useEffect(() => {
+        async function fetchUserId() {
+            try {
+                const userInfo = await usuario.getMyInfo();
+                setUserId(userInfo.id); // Establece el ID del usuario en el estado
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setErrorMessage(`Error al obtener información del usuario: ${error.message}`);
+                } else {
+                    setErrorMessage("Error desconocido al obtener información del usuario.");
+                }
+            }
+        }
+
+        fetchUserId().catch(console.error);
     }, []);
 
     function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -61,15 +81,21 @@ export default function ItemForm({
             return;
         }
 
+        if (!userId) {
+            setErrorMessage("No se pudo obtener el ID del usuario. Intenta iniciar sesión nuevamente.");
+            return;
+        }
+
         try {
             const response = await item.createItem({
                 ...formData,
                 category_id: selectedCategory,
+                user_id: userId, // Usa el ID del usuario obtenido
             } as ItemRequest);
             onSubmitSuccess(response);
         } catch (error: unknown) {
             if (error instanceof Error) {
-                setErrorMessage(error.message);
+                setErrorMessage(`Error al registrar el ítem: ${error.message}`);
             } else {
                 setErrorMessage("Error desconocido al registrar el ítem.");
             }

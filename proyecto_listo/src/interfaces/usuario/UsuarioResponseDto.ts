@@ -1,10 +1,9 @@
-export interface UserResponse{
+export interface UsuarioResponseDto {
     id: number;
-    firstName:String;
+    firstName:string;
     lastName: string;
     email: string;
     addres: string;
     phone: string;
     createdAt: string;
-    
 }
