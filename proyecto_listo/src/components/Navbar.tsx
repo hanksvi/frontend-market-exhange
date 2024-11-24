@@ -21,11 +21,11 @@ export default function Navbar() {
                             Publicar
 
                         </Link>
-                        <Link to="/dashboard/category/create" className="hover:text-gray-300">
+                        <Link to="/dashboard/category" className="hover:text-gray-300">
 
                             Categorías
                         </Link>
-                        <Link to="/help" className="hover:text-gray-300">
+                        <Link to="/dashboard/category/create" className="hover:text-gray-300">
                             Ayuda
                         </Link>
                     </>
