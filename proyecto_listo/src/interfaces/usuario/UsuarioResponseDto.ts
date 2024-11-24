@@ -1,9 +1,9 @@
 export interface UsuarioResponseDto {
     id: number;
-    firstName:string;
-    lastName: string;
+    firstname:string;
+    lastname: string;
     email: string;
-    addres: string;
+    address: string;
     phone: string;
     createdAt: string;
 }

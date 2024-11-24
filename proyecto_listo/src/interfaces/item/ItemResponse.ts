@@ -4,7 +4,6 @@ export interface ItemResponse{
     description: string;
     categoryName: string;
     condition: Condition;
-
     userName: string;
     
 }

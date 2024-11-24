@@ -11,7 +11,6 @@ export default class Api {
     this._authorization = value;
   }
 
-  
   private constructor(basePath: string, authorization: string | null) {
     this._basePath = basePath;
     this._authorization = authorization || localStorage.getItem("jwtToken");
@@ -21,16 +20,20 @@ export default class Api {
     if (!this._instance) {
       const basePath = `http://${import.meta.env.VITE_BASE_URL}:8080`;
       console.log("Base URL:", basePath);
-      this._instance = new Api(basePath, null);
+      const storedToken = localStorage.getItem("jwtToken");
+      this._instance = new Api(basePath, storedToken);
     }
 
     return this._instance;
   }
 
-  public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
+  public async request<RequestType, ResponseType>(
+      config: AxiosRequestConfig,
+      skipAuth = false // Nuevo parámetro para omitir el encabezado de autorización
+  ) {
     const headers: RawAxiosRequestHeaders = {
       "Content-Type": "application/json",
-      Authorization: this._authorization ? `Bearer ${this._authorization}` : "",
+      ...(skipAuth ? {} : { Authorization: this._authorization ? `Bearer ${this._authorization}` : "" }),
     };
 
     const configOptions: AxiosRequestConfig = {
@@ -56,6 +59,7 @@ export default class Api {
   public post<RequestBodyType, ResponseBodyType>(
       data: RequestBodyType,
       options: AxiosRequestConfig,
+      skipAuth = false // Nuevo parámetro para omitir el encabezado de autorización
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
@@ -63,7 +67,7 @@ export default class Api {
       data,
     };
 
-    return this.request<RequestBodyType, ResponseBodyType>(configOptions);
+    return this.request<RequestBodyType, ResponseBodyType>(configOptions, skipAuth);
   }
 
   public delete(options: AxiosRequestConfig) {
@@ -77,7 +81,7 @@ export default class Api {
 
   public put<RequestBodyType, ResponseBodyType>(
       data: RequestBodyType,
-      options: AxiosRequestConfig,
+      options: AxiosRequestConfig
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
@@ -90,7 +94,7 @@ export default class Api {
 
   public patch<RequestBodyType, ResponseBodyType>(
       data: RequestBodyType,
-      options: AxiosRequestConfig,
+      options: AxiosRequestConfig
   ) {
     const configOptions: AxiosRequestConfig = {
       ...options,
