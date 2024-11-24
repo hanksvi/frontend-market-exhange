@@ -86,6 +86,8 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
     }
 
     try {
+      setErrorMessage("Datos enviados");
+      setTimeout(() => setErrorMessage(null), 4000);
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
         formDataToSend.append("description", formData.description);
