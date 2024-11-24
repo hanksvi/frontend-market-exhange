@@ -34,9 +34,10 @@ export default function CategoryItemsPage() {
                   <h2 className="text-lg font-semibold">{item.name}</h2>
                   <p className="text-sm text-gray-600">{item.description}</p>
                   <img
-                      src={`http://localhost:8080/item${item.imageUrl}/image`}
-                      alt={item.name}
-                      className="w-full h-auto mt-2"
+                    src={`http://localhost:8080${item.imageUrl}`}
+                    alt={item.name}
+                    onError={(e) => { e.currentTarget.src = "/default-placeholder.png"; }}
+                    className="w-full h-auto mt-2"
                   />
               </div>
           ))}
