@@ -9,6 +9,9 @@ export async function login(LoginRequest: LoginRequest) {
         url: "/auth/login",
     });
 
+    const token = response.data.token;
+    localStorage.setItem("jwtToken", token);
+
     api.authorization = response.data.token;
 
     return response;

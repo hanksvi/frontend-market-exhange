@@ -11,9 +11,10 @@ export default class Api {
     this._authorization = value;
   }
 
+  
   private constructor(basePath: string, authorization: string | null) {
     this._basePath = basePath;
-    this._authorization = authorization;
+    this._authorization = authorization || localStorage.getItem("jwtToken");
   }
 
   public static async getInstance() {
