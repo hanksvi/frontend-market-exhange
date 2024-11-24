@@ -12,7 +12,6 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import EditCategoryPage from './pages/EditCategoryPage';
-import RegisterItemPage from "./pages/RegisterItemPage.tsx";
 
 //Vamos a crear un router y vamos a llamar a createBrowserRouter
 const MainLayout = () => (
@@ -62,7 +61,7 @@ const router = createBrowserRouter([
         path: '/items/create', // Nueva ruta para registrar ítems
         element: <RegisterItemPage />, // Página para registrar ítems
       }
-      
+
     ],
   },
 ]);

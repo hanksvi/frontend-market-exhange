@@ -6,6 +6,15 @@ export default function ProtectedRoute(){
     /*const[isAuth, setIsAuth] = useState(false); ///Cómo ya sabemos el useState permite actualizar las variables, en esta caso parte de esto, caso contrario otro
 */
     const auth = useAuth();
+
+    if (auth.isAuthenticated === undefined) {
+        return <div>Loading...</div>;
+    }
+
     //return isAuth   ? <Outlet /> : <Navigate to="/"/>;
-    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/"/>
+    if (auth.isAuthenticated === undefined) {
+        return <div>Loading...</div>;
+    }
+    
+    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }
