@@ -25,6 +25,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
+        const role = localStorage.getItem("userRole") || "USER";
         if (token) {
             setAccessToken(token);
             setIsAuthenticated(true);
@@ -37,6 +38,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem("accessToken", token);
         setIsAuthenticated(true);
     }
+    
+    
 
     function logout() {
         console.log("Antes de logout:", isAuthenticated);

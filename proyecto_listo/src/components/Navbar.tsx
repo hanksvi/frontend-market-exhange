@@ -17,7 +17,7 @@ export default function Navbar() {
                         <a href="/publicacion" className="hover:text-gray-300">
                             Publicar
                         </a>
-                        <a href="/category" className="hover:text-gray-300">
+                        <a href="/dashboard/category/create" className="hover:text-gray-300">
                             Categorías
                         </a>
                         <a href="/help" className="hover:text-gray-300">
