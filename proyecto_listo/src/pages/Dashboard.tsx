@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
+import AllItems from "../components/AllItems";
 
 export default function Dashboard() {
     const { getAccessToken } = useAuth();
@@ -39,12 +40,8 @@ export default function Dashboard() {
                 ) : (
                     // Funcionalidades específicas para usuarios normales
                     <div>
-                        <h2 className="text-lg font-semibold mb-4">Mis Publicaciones</h2>
-                        <ul className="space-y-4">
-                            <li className="bg-gray-200 p-4 rounded-lg">Publicación 1</li>
-                            <li className="bg-gray-200 p-4 rounded-lg">Publicación 2</li>
-                            <li className="bg-gray-200 p-4 rounded-lg">Publicación 3</li>
-                        </ul>
+                        <h2 className="text-lg font-semibold mb-4">Publicaciones Disponibles</h2>
+                        <AllItems /> {/* Renderiza el componente AllItems */}
                     </div>
                 )}
             </div>
