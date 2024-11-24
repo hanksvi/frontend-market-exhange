@@ -1,33 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { FaRegUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { usuario } from "../services/user/user"; // Servicio de usuario
 
 export default function Navbar() {
+    
     const auth = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [userName, setUserName] = useState<string | null>(null); 
 
     const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
     const closeDropdown = () => setIsDropdownOpen(false);
 
+    const { getAccessToken } = useAuth();
+    const [role, setRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = getAccessToken();
+
+            if (token) {
+                try {
+                    // Decodifica el token para obtener el rol
+                    const decodedToken: any = JSON.parse(atob(token.split(".")[1]));
+                    setRole(decodedToken.role || "USER");
+
+                    // Llama al servicio para obtener el nombre del usuario
+                    const userInfo = await usuario.getMyInfo();
+                    setUserName(`${userInfo.firstname}`); // Establece el nombre completo
+                } catch (error) {
+                    console.error("Error al obtener información del usuario:", error);
+                }
+            }
+        };
+
+        if (auth.isAuthenticated) {
+            fetchUserInfo();
+        }
+    }, [auth.isAuthenticated, getAccessToken]);
+
+
+    
     //psuhwa ps
     return (
         <nav className="flex justify-between items-center bg-gray-800 text-white p-4">
             {/* Sección izquierda del navbar */}
             <div className="flex space-x-4">
                 {auth.isAuthenticated && (
+
                     <>
+                    {role === "USER" && (
+                        <>
+                        <Link to= "/dashboard" className="hover:text-gray-300">
+                        Home
+                        </Link>
+                        
                         <Link to="/dashboard/item/create" className="hover:text-gray-300">
-                            Publicar
+                        Publicar
 
-                        </Link>
-                        <Link to="/dashboard/category" className="hover:text-gray-300">
+                    </Link>
+                    <Link to="/dashboard/category" className="hover:text-gray-300">
 
-                            Categorías
+                        Categorías
+                    </Link>
+                    <Link to="/dashboard/category/create" className="hover:text-gray-300">
+                        Ayuda
+                    </Link>
+                    </>
+                    )}
+                    {role === "ADMIN" && (
+                        <>
+                        <Link to= "/dashboard" className="hover:text-gray-300">
+                        Home
                         </Link>
+                        
                         <Link to="/dashboard/category/create" className="hover:text-gray-300">
-                            Ayuda
-                        </Link>
+                        Crear Categoria
+
+                    </Link>
+                    <Link to="/dashboard/category" className="hover:text-gray-300">
+
+                        Categorías
+                    </Link>
+                    </>
+                    )}
+                        
                     </>
                 )}
             </div>
@@ -35,6 +93,7 @@ export default function Navbar() {
             {/* Sección derecha del navbar */}
             <div className="relative">
                 {auth.isAuthenticated ? (
+                    
                     <div>
                         {/* Botón del dropdown */}
                         <button
@@ -44,7 +103,7 @@ export default function Navbar() {
                             aria-label="Perfil"
                         >
                             <FaRegUserCircle className="mr-2" />
-                            <p>Perfil</p>
+                            <p>{userName ? userName : "Perfil"}</p>
                             {/* Icono de flecha */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

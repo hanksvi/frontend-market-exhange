@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { category } from "../services/category/category"; // Ruta donde tienes tu servicio
 import { ItemResponse } from "../interfaces/item/ItemResponse";
+import { item } from "../services/item/item"; // Usa el servicio de ítems
 
 export default function CategoryItemsPage() {
   const { id } = useParams<{ id: string }>(); // Obtiene el ID de la categoría desde la URL
@@ -11,8 +11,8 @@ export default function CategoryItemsPage() {
   useEffect(() => {
     const fetchCategoryItems = async () => {
       try {
-        const categoryData = await category.getCategoryById(Number(id)); // Obtiene la categoría por ID
-        setItems(categoryData.items); // Establece los ítems de la categoría
+        const itemsData = await item.getItemsByCategory(Number(id)); // Obtiene los ítems de la categoría
+        setItems(itemsData); // Establece los ítems de la categoría
       } catch (error) {
         console.error("Error al obtener los ítems de la categoría:", error);
       } finally {

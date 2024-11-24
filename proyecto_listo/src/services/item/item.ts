@@ -13,13 +13,15 @@ export const item = {
       const api = await Api.getInstance();
       const response = await api.get<void, ItemResponse>({ url: `/item/${id}` });
       return response.data;
-    },
+    },  
   
-    async createItem(data: ItemRequest): Promise<ItemResponse> {
+    async createItem(data: FormData): Promise<ItemResponse> {
       const api = await Api.getInstance();
-      const response = await api.post<ItemRequest, ItemResponse>(data, { url: '/item' });
+      const response = await api.post<FormData, ItemResponse>(data, { url: "/item" });
       return response.data;
-    },
+  },
+  
+    
   
     async updateItem(id: number, data: ItemRequest): Promise<ItemResponse> {
       const api = await Api.getInstance();

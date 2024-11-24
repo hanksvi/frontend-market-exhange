@@ -4,4 +4,6 @@ export interface ItemRequest{
     category_id: number;
     user_id: number;
     condition: "NEW" | "USED";
+    image: File;
+
 }
