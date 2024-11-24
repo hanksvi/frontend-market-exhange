@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import UserSettings from "../components/UserSettings"; // Renderiza la configuración del usuario
 import UserItems from "../components/UserItems"; // Renderiza los ítems publicados por el usuario
+import UserTrades from "../components/UserTrades";
+import UserTradesPending from "../components/UserTradesPending";
 
 export default function CuentaPage() {
-    const [activeTab, setActiveTab] = useState<"info" | "items">("info"); // Estado para alternar entre pestañas
+    const [activeTab, setActiveTab] = useState<"info" | "items" | "tradeos" | "tradeosPending">("info"); // Estado para alternar entre pestañas
 
     return (
         <div
@@ -37,6 +39,23 @@ export default function CuentaPage() {
                             >
                                 Mis Ítems Publicados
                             </li>
+                            <li
+                                className={`cursor-pointer p-2 rounded ${
+                                    activeTab === "tradeos" ? "bg-blue-100 text-blue-700 font-bold" : "text-gray-600"
+                                }`}
+                                onClick={() => setActiveTab("tradeos")}
+                            >
+                                Tradeos
+                            </li>
+
+                            <li
+                                className={`cursor-pointer p-2 rounded ${
+                                    activeTab === "tradeosPending" ? "bg-blue-100 text-blue-700 font-bold" : "text-gray-600"
+                                }`}
+                                onClick={() => setActiveTab("tradeosPending")}
+                            >
+                                Tradeos por revisar
+                            </li>
                         </ul>
                     </div>
 
@@ -52,6 +71,18 @@ export default function CuentaPage() {
                         {activeTab === "items" && (
                             <>
                                 <UserItems /> {/* Componente para mostrar los ítems del usuario */}
+                            </>
+                        )}
+
+                        {activeTab === "tradeos" && (
+                            <>
+                                <UserTrades /> {/* Componente para mostrar los ítems del usuario */}
+                            </>
+                        )}
+
+                        {activeTab === "tradeosPending" && (
+                            <>
+                                <UserTradesPending /> {/* Componente para mostrar los ítems del usuario */}
                             </>
                         )}
                     </div>

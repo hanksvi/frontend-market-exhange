@@ -6,6 +6,8 @@ export interface ItemResponse{
     condition: Condition;
     userName: string;
     imageUrl: string;
+    status: Condition;
+    user_id: number;
 }
 
 export enum Condition{
