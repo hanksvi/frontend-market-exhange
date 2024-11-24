@@ -1,6 +1,7 @@
 import Api from "../../apis/api";
 import { ItemRequest } from '../../interfaces/item/ItemRequest';
 import { ItemResponse } from '../../interfaces/item/ItemResponse';
+import axios from 'axios';
 
 export const item = {
     async getAllItems(): Promise<ItemResponse[]> {

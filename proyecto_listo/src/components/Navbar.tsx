@@ -43,6 +43,7 @@ export default function Navbar() {
 
     
     //psuhwa ps
+    
     return (
         <nav className="flex justify-between items-center bg-gray-800 text-white p-4">
             {/* Sección izquierda del navbar */}
@@ -123,7 +124,7 @@ export default function Navbar() {
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg">
                                 <Link
-                                    to="/account"
+                                    to="/dashboard/cuenta"
                                     onClick={closeDropdown}
                                     className="block px-4 py-2 hover:bg-gray-100"
                                 >

@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import EditCategoryPage from './pages/EditCategoryPage';
 import RegisterItemPage from './pages/RegisterItemPage';
+import CuentaPage from "./pages/CuentaPage.tsx";
 import AllCategoryPage from './pages/AllCategoryPage';
 import ItemsByCategory from './pages/ItemsByCategory';
 
@@ -79,7 +80,11 @@ const router = createBrowserRouter([
               element: <RegisterItemPage />
             },
             ]
-          }
+          },
+          {
+            path: 'cuenta', // Nueva ruta "/dashboard/cuenta"
+            element: <CuentaPage />, // Página CuentaPage
+          },
         ],
       },
     ],

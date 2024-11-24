@@ -43,10 +43,12 @@ export default class Api {
     return this._instance;
   }
 
-  
+
+
   public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
     // No establecer 'Content-Type' aquí; Axios lo manejará automáticamente
     // Especialmente importante para FormData, donde el 'boundary' es necesario
+
 
     const configOptions: AxiosRequestConfig = {
       ...config,

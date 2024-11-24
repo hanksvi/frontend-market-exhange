@@ -4,7 +4,7 @@ function RegisterItemPage() {
     const initialData = {
         name: "",
         description: "",
-        condition: "NEW",
+        condition: "NEW" as "NEW" | "USED",
     };
 
 

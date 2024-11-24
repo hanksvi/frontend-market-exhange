@@ -1,5 +1,5 @@
-import {UsuarioResponseDto} from "@interfaces/usuario/UsuarioResponseDto.ts";
-import {UsuarioRequestDto} from "@interfaces/usuario/UsuarioRequestDto.ts";
+import {UsuarioResponseDto} from "../../interfaces/usuario/UsuarioResponseDto.ts";
+import {UsuarioRequestDto} from "../../interfaces/usuario/UsuarioRequestDto.ts";
 import Api from "../../apis/api.ts";
 
 export const usuario = {
