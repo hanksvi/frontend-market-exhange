@@ -1,10 +1,8 @@
 package com.dbp.proyectobackendmarketexchange.item.domain;
 
-
 import com.dbp.proyectobackendmarketexchange.auth.utils.AuthorizationUtils;
 import com.dbp.proyectobackendmarketexchange.category.domain.Category;
 import com.dbp.proyectobackendmarketexchange.category.infrastructure.CategoryRepository;
-import com.dbp.proyectobackendmarketexchange.event.item.ItemCreatedEvent;
 import com.dbp.proyectobackendmarketexchange.exception.ResourceNotFoundException;
 import com.dbp.proyectobackendmarketexchange.exception.UnauthorizeOperationException;
 import com.dbp.proyectobackendmarketexchange.item.dto.ItemRequestDto;
@@ -18,13 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Collectors;
-
 import java.util.List;
+
+
+
 
 @Service
 public class ItemService {
@@ -33,16 +35,17 @@ public class ItemService {
     private final UsuarioRepository usuarioRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final AuthorizationUtils authorizationUtils;
-    private final ModelMapper modelMapper;
+
+
+    public static final String IMAGE_UPLOAD_DIR = "src/main/java/com/dbp/proyectobackendmarketexchange/imagenes";
 
     @Autowired
-    public ItemService(ModelMapper modelMapper, ApplicationEventPublisher eventPublisher, ItemRepository itemRepository, CategoryRepository categoryRepository, UsuarioRepository usuarioRepository, AuthorizationUtils authorizationUtils) {
+    public ItemService(ApplicationEventPublisher eventPublisher, ItemRepository itemRepository, CategoryRepository categoryRepository, UsuarioRepository usuarioRepository, AuthorizationUtils authorizationUtils) {
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
         this.usuarioRepository = usuarioRepository;
         this.authorizationUtils = authorizationUtils;
         this.eventPublisher = eventPublisher;
-        this.modelMapper = modelMapper;
     }
 
     public ItemResponseDto createItem(ItemRequestDto itemDto) {
@@ -63,37 +66,45 @@ public class ItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
 
         // Mapear el DTO a la entidad Item
-        Item item = modelMapper.map(itemDto, Item.class);
+        Item item = new Item();
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setCondition(itemDto.getCondition());
         item.setCategory(category);
         item.setUsuario(user);
         item.setStatus(Status.PENDING);
 
+        // Guardar el ítem primero para obtener su ID
+        Item savedItem = itemRepository.save(item);
+
+        // Manejar la imagen
         if (itemDto.getImage() != null && !itemDto.getImage().isEmpty()) {
             try {
-                item.setImage(itemDto.getImage().getBytes());
+                // Crear un nombre de archivo único
+                String filename = "item_" + savedItem.getId() + "_" + System.currentTimeMillis() + ".jpg";
+
+                // Crear la ruta del archivo dentro de "uploads/"
+                Path filePath = Paths.get(IMAGE_UPLOAD_DIR, filename);
+
+                // Asegurarse de que la carpeta exista
+                Files.createDirectories(filePath.getParent());
+
+                // Guardar el archivo en el sistema
+                Files.copy(itemDto.getImage().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // Guardar la ruta relativa en el item
+                savedItem.setImagePath(filename);
+                itemRepository.save(savedItem);
             } catch (IOException e) {
-                throw new RuntimeException("Error al procesar la imagen", e);
+                throw new RuntimeException("Error al guardar la imagen", e);
             }
         }
 
-        // Guardar el ítem
-        Item savedItem = itemRepository.save(item);
-
         // Mapear a Response DTO
-        ItemResponseDto responseDto = modelMapper.map(savedItem, ItemResponseDto.class);
-        responseDto.setUserName(user.getEmail());
-        responseDto.setCategoryName(category.getName());
-
-        // Establecer la URL de la imagen
-        if (savedItem.getImage() != null && savedItem.getImage().length > 0) {
-            responseDto.setImageUrl("/item/" + savedItem.getId() + "/image"); // Asegúrate de que la ruta coincida con tu endpoint
-        }
-
-        return responseDto;
+        return mapItemToDto(savedItem);
     }
 
 
-    // Metodo para que el administrador apruebe o rechace el ítem
     public ItemResponseDto approveItem(Long itemId, Boolean approve) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
@@ -106,54 +117,40 @@ public class ItemService {
 
         itemRepository.save(item);
 
-        return modelMapper.map(item, ItemResponseDto.class);
+        return mapItemToDto(item);
     }
 
     public ItemResponseDto updateItem(Long itemId, ItemRequestDto itemRequestDto) {
-
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item no encontrado"));
-
 
         Category category = categoryRepository.findById(itemRequestDto.getCategory_id())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
 
-        Usuario usuario = usuarioRepository.findById(itemRequestDto.getUser_id())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
         if (!authorizationUtils.isAdminOrResourceOwner(existingItem.getUsuario().getId())) {
-            throw new UnauthorizeOperationException("You do not have permission to update this item.");
+            throw new UnauthorizeOperationException("No tienes permiso para actualizar este ítem.");
         }
 
-        modelMapper.map(itemRequestDto, existingItem);
-
-        // Establecer manualmente la categoría y el usuario si no están en el DTO
+        // Actualizar campos
+        existingItem.setName(itemRequestDto.getName());
+        existingItem.setDescription(itemRequestDto.getDescription());
+        existingItem.setCondition(itemRequestDto.getCondition());
         existingItem.setCategory(category);
-        existingItem.setUsuario(usuario);
+
+        // Manejar la imagen si es necesario
+        // Similar al método createItem
 
         Item updatedItem = itemRepository.save(existingItem);
 
-        ItemResponseDto responseDto= modelMapper.map(updatedItem, ItemResponseDto.class);
-
-        responseDto.setUserName(updatedItem.getUsuario().getEmail());
-        responseDto.setCategoryName(updatedItem.getCategory().getName());
-
-        return responseDto;
+        return mapItemToDto(updatedItem);
     }
+
 
     public ItemResponseDto getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item no encontrado"));
 
-
-        ItemResponseDto responseDto= modelMapper.map(item, ItemResponseDto.class);
-
-
-        responseDto.setUserName(item.getUsuario().getEmail());
-        responseDto.setCategoryName(item.getCategory().getName());
-        responseDto.setImageUrl("/item" + item.getId() + "/image");
-
-        return responseDto;
+        return mapItemToDto(item);
     }
 
     public void deleteItem(Long itemId) {
@@ -161,7 +158,7 @@ public class ItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
         if (!authorizationUtils.isAdminOrResourceOwner(item.getUsuario().getId())) {
-            throw new UnauthorizeOperationException("You do not have permission to delete this item.");
+            throw new UnauthorizeOperationException("No tienes permiso para eliminar este ítem.");
         }
 
         itemRepository.delete(item);
@@ -170,48 +167,31 @@ public class ItemService {
     public List<ItemResponseDto> getAllItems() {
         List<Item> items = itemRepository.findAll();
 
-        // Mapear cada Item a ItemResponseDto con atributos adicionales
         return items.stream()
-                .map(item -> {
-                    ItemResponseDto responseDto = modelMapper.map(item, ItemResponseDto.class);
-                    responseDto.setCategoryName(item.getCategory().getName());  // Seteamos el nombre de la categoría
-                    responseDto.setUserName(item.getUsuario().getEmail());  // Seteamos el nombre (o email) del usuari
-                    responseDto.setImageUrl("/item" + item.getId() + "/image");
-                    return responseDto;
-                })
+                .map(this::mapItemToDto)
+                .collect(Collectors.toList());
+    }
+    public List<ItemResponseDto> getItemsByUser(Long userId) {
+        // Verificar si el usuario existe
+        if (!usuarioRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
+
+        // Obtener los ítems del usuario
+        List<Item> items = itemRepository.findByUsuarioId(userId);
+
+        return items.stream()
+                .map(this::mapItemToDto)
                 .collect(Collectors.toList());
     }
 
     public List<ItemResponseDto> getItemsByCategory(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new ResourceNotFoundException("Categoría no encontrada");
+        }
         List<Item> items = itemRepository.findByCategoryId(categoryId);
-
-
-
         return items.stream()
-                .map(item -> {
-                    ItemResponseDto responseDto = modelMapper.map(item, ItemResponseDto.class);
-                    responseDto.setCategoryName(item.getCategory().getName());  // Seteamos el nombre de la categoría
-                    responseDto.setUserName(item.getUsuario().getEmail());
-                    if (item.getImage() != null && item.getImage().length > 0) {
-                        responseDto.setImageUrl("/item" + item.getId() + "/image");
-                    }// Seteamos el nombre (o email) del usuario
-
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    public List<ItemResponseDto> getItemsByUser(Long userId) {
-        List<Item> items = itemRepository.findByUsuarioId(userId);
-
-        return items.stream()
-                .map(item -> {
-                    ItemResponseDto responseDto = modelMapper.map(item, ItemResponseDto.class);
-                    responseDto.setCategoryName(item.getCategory().getName());  // Seteamos el nombre de la categoría
-                    responseDto.setUserName(item.getUsuario().getEmail());  // Seteamos el nombre (o email) del usuario
-                    responseDto.setImageUrl("/item" + item.getId() + "/image");
-                    return responseDto;
-                })
+                .map(this::mapItemToDto)
                 .collect(Collectors.toList());
     }
 
@@ -233,15 +213,37 @@ public class ItemService {
         // Obtener los ítems del usuario autenticado
         List<Item> items = itemRepository.findByUsuarioId(usuario.getId());
 
-        // Mapear los ítems a ItemResponseDto
         return items.stream()
-                .map(item -> {
-                    ItemResponseDto responseDto = modelMapper.map(item, ItemResponseDto.class);
-                    responseDto.setCategoryName(item.getCategory().getName());
-                    responseDto.setUserName(item.getUsuario().getEmail());
-                    return responseDto;
-                })
+                .map(this::mapItemToDto)
                 .collect(Collectors.toList());
+    }
+
+    private ItemResponseDto mapItemToDto(Item item) {
+        ItemResponseDto responseDto = new ItemResponseDto();
+        responseDto.setId(item.getId());
+        responseDto.setName(item.getName());
+        responseDto.setDescription(item.getDescription());
+        responseDto.setCondition(item.getCondition());
+        responseDto.setStatus(item.getStatus());
+        responseDto.setCreatedAt(item.getCreatedAt());
+
+        if (item.getUsuario() != null && item.getUsuario().getEmail() != null) {
+            responseDto.setUserName(item.getUsuario().getEmail());
+        } else {
+            responseDto.setUserName("Usuario desconocido");
+        }
+
+        if (item.getCategory() != null && item.getCategory().getName() != null) {
+            responseDto.setCategoryName(item.getCategory().getName());
+        } else {
+            responseDto.setCategoryName("Categoría desconocida");
+        }
+
+        if (item.getImagePath() != null) {
+            responseDto.setImageUrl("/item/" + item.getId() + "/image");
+        }
+
+        return responseDto;
     }
 
 }

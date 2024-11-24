@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/item/user/{userId}").hasAuthority("USER")
                         .requestMatchers(HttpMethod.GET, "/item/mine").hasAuthority("USER")
                         .requestMatchers(HttpMethod.GET, "/item/{id}").hasAuthority("USER")
+                        .requestMatchers(HttpMethod.GET, "/item/{id}/image").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/item").hasAnyAuthority("USER", "ADMIN")
 
                         // Acceso de ADMIN a sus propios ítems

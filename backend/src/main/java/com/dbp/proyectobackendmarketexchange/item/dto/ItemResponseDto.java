@@ -31,4 +31,6 @@ public class ItemResponseDto {
     private Status status;
 
     private String imageUrl;
+
+
 }

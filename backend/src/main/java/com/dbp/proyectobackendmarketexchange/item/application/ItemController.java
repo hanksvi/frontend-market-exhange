@@ -1,25 +1,29 @@
 package com.dbp.proyectobackendmarketexchange.item.application;
 
-
 import com.dbp.proyectobackendmarketexchange.exception.ResourceNotFoundException;
 import com.dbp.proyectobackendmarketexchange.item.domain.Item;
 import com.dbp.proyectobackendmarketexchange.item.domain.ItemService;
 import com.dbp.proyectobackendmarketexchange.item.dto.ItemRequestDto;
 import com.dbp.proyectobackendmarketexchange.item.dto.ItemResponseDto;
 import com.dbp.proyectobackendmarketexchange.item.infrastructure.ItemRepository;
+import jakarta.annotation.Resource;
+
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+
+import static com.dbp.proyectobackendmarketexchange.item.domain.ItemService.IMAGE_UPLOAD_DIR;
 
 @RestController
 @RequestMapping("/item")
@@ -36,29 +40,41 @@ public class ItemController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ItemResponseDto> createItem(@ModelAttribute ItemRequestDto requestDto) {
-
         ItemResponseDto responseDto = itemService.createItem(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // Endpoint para devolver imágenes
-    @GetMapping("/{itemId}/image    ")
+    @GetMapping("/{itemId}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long itemId) {
-        // Busca el ítem en la base de datos
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ítem no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Item no encontrado"));
 
-        if (item.getImage() == null || item.getImage().length == 0) {
-            return ResponseEntity.notFound().build(); // Devuelve 404 si no hay imagen
+        if (item.getImagePath() == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        // Detectar el tipo MIME de la imagen usando Apache Tika
-        Tika tika = new Tika();
-        String mimeType = tika.detect(item.getImage());
+        try {
+            // Construir la ruta del archivo
+            Path imagePath = Paths.get(IMAGE_UPLOAD_DIR, item.getImagePath());
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(mimeType))
-                .body(item.getImage());
+            // Verificar si el archivo existe
+            if (!Files.exists(imagePath)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Leer el contenido del archivo
+            byte[] fileContent = Files.readAllBytes(imagePath);
+
+            // Determinar el tipo MIME
+            String mimeType = Files.probeContentType(imagePath);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mimeType != null ? mimeType : "application/octet-stream"))
+                    .body(fileContent);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 
@@ -87,13 +103,13 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<ItemResponseDto> deleteItem(@PathVariable Long itemId) {
+    public ResponseEntity<Void> deleteItem(@PathVariable Long itemId) {
         itemService.deleteItem(itemId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ItemResponseDto>> getItemByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<ItemResponseDto>> getItemsByCategory(@PathVariable Long categoryId) {
         List<ItemResponseDto> items = itemService.getItemsByCategory(categoryId);
         return ResponseEntity.ok(items);
     }

@@ -2,6 +2,8 @@ package com.dbp.proyectobackendmarketexchange.item.domain;
 
 import com.dbp.proyectobackendmarketexchange.category.domain.Category;
 import com.dbp.proyectobackendmarketexchange.usuario.domain.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +34,7 @@ public class Item {
     private String description;
 
     @NotNull(message = "La categoría no puede ser nula")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -45,7 +48,7 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING; // estado de item (Pendiente, aprobado, denegado
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @NotNull(message = "El usuario no puede ser nulo")
     private Usuario usuario;
@@ -65,7 +68,8 @@ public class Item {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @Lob // Large Object para almacenar datos binarios
-    private byte[] image; // Campo para almacenar la imagen
+    private String imagePath;
+
+
 
 }
