@@ -13,6 +13,10 @@ import HomePage from './pages/HomePage';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import EditCategoryPage from './pages/EditCategoryPage';
 import RegisterItemPage from './pages/RegisterItemPage';
+import CuentaPage from "./pages/CuentaPage.tsx";
+import AllCategoryPage from './pages/AllCategoryPage';
+import ItemsByCategory from './pages/ItemsByCategory';
+
 
 //Vamos a crear un router y vamos a llamar a createBrowserRouter
 const MainLayout = () => (
@@ -59,6 +63,14 @@ const router = createBrowserRouter([
                 path: 'edit/:id', // Ruta "/dashboard/category/edit/:id"
                 element: <EditCategoryPage />,
               },
+              {
+                path: '',
+                element: <AllCategoryPage />,
+              },
+              {
+                path: ':id/items',
+                element: <ItemsByCategory />
+              }
             ],
           },
           {
@@ -68,7 +80,11 @@ const router = createBrowserRouter([
               element: <RegisterItemPage />
             },
             ]
-          }
+          },
+          {
+            path: 'cuenta', // Nueva ruta "/dashboard/cuenta"
+            element: <CuentaPage />, // Página CuentaPage
+          },
         ],
       },
     ],

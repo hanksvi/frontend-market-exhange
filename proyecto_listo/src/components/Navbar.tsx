@@ -22,11 +22,11 @@ export default function Navbar() {
                             Publicar
 
                         </Link>
-                        <Link to="/dashboard/category/create" className="hover:text-gray-300">
+                        <Link to="/dashboard/category" className="hover:text-gray-300">
 
                             Categorías
                         </Link>
-                        <Link to="/help" className="hover:text-gray-300">
+                        <Link to="/dashboard/category/create" className="hover:text-gray-300">
                             Ayuda
                         </Link>
                     </>
@@ -65,7 +65,7 @@ export default function Navbar() {
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg">
                                 <Link
-                                    to="/account"
+                                    to="/dashboard/cuenta"
                                     onClick={closeDropdown}
                                     className="block px-4 py-2 hover:bg-gray-100"
                                 >

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
+<<<<<<< HEAD
 import extractRoleFromToken from "../jwt/jwt"; // Importa la función de tu archivo
+=======
+import AllItems from "../components/AllItems";
+>>>>>>> e0ef68c0bff4ee68745072a8309e797ec369c6fe
 
 export default function Dashboard() {
   const { getAccessToken } = useAuth();
@@ -20,6 +24,7 @@ export default function Dashboard() {
       <div className="flex-1 bg-white shadow-lg p-4">
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
+<<<<<<< HEAD
         {role === "ADMIN" ? (
           // Funcionalidades específicas para administradores
           <div>
@@ -53,6 +58,33 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+=======
+                {role === "ADMIN" ? (
+                    // Funcionalidades específicas para administradores
+                    <div>
+                        <h2 className="text-lg font-semibold mb-4">Acciones de Administrador</h2>
+                        <ul className="space-y-4">
+                            <li className="bg-gray-200 p-4 rounded-lg">
+                                <h3 className="font-bold">Aprobar Pedidos</h3>
+                                <p className="text-gray-600">Gestiona los pedidos pendientes de aprobación.</p>
+                                <a href="/admin/pedidos" className="text-blue-500 hover:underline">Ir a Pedidos</a>
+                            </li>
+                            <li className="bg-gray-200 p-4 rounded-lg">
+                                <h3 className="font-bold">Gestionar Categorías</h3>
+                                <p className="text-gray-600">Crea, edita o elimina categorías de productos.</p>
+                                <a href="/dashboard/category/create" className="text-blue-500 hover:underline">Ir a Categorías</a>
+                            </li>
+                        </ul>
+                    </div>
+                ) : (
+                    // Funcionalidades específicas para usuarios normales
+                    <div>
+                        <h2 className="text-lg font-semibold mb-4">Publicaciones Disponibles</h2>
+                        <AllItems /> {/* Renderiza el componente AllItems */}
+                    </div>
+                )}
+            </div>
+>>>>>>> e0ef68c0bff4ee68745072a8309e797ec369c6fe
 
       {/* Sidebar Derecho: Tradeos recientes */}
       <div className="w-1/4 bg-gray-50 shadow-lg p-4">

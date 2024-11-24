@@ -95,6 +95,7 @@ export default function ItemForm({
         }
 
         try {
+<<<<<<< HEAD
             const formDataToSend = new FormData();
             formDataToSend.append("name", formData.name);
             formDataToSend.append("description", formData.description);
@@ -107,6 +108,13 @@ export default function ItemForm({
             }
     
             const response = await item.createItem(formDataToSend);
+=======
+            const response = await item.createItem({
+                ...formData,
+                category_id: selectedCategory,
+                user_id: userId, // Usa el ID del usuario obtenido
+            } as ItemRequest);
+>>>>>>> e0ef68c0bff4ee68745072a8309e797ec369c6fe
             onSubmitSuccess(response);
         } catch (error: unknown) {
             if (error instanceof Error) {
