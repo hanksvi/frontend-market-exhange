@@ -25,10 +25,7 @@ export default function CategoryItemsPage() {
 
         const imagePromises = itemsData.map(async (item) => {
           try {
-            const imageUrl = await fetchImage(
-              `http://localhost:8080${item.imageUrl}`,
-              accessToken
-            );
+            const imageUrl = await fetchImage(`//localhost:8080${item.imageUrl}`, accessToken);
             return { id: item.id, url: imageUrl };
           } catch {
             return { id: item.id, url: "/default-placeholder.png" };
@@ -55,13 +52,27 @@ export default function CategoryItemsPage() {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
       {items.map((item) => (
         <div key={item.id} className="bg-gray-200 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">{item.name}</h2>
-          <p className="text-sm text-gray-600">{item.description}</p>
-          <img
-            src={imageUrls[item.id] || "/default-placeholder.png"}
-            alt={item.name}
-            className="w-full h-auto mt-2"
-          />
+           <div>
+                                <h3 className="text-lg font-bold text-blue-600">{item.name}</h3>
+                                <img
+                                    src={imageUrls[item.id] || "/default-placeholder.png"}
+                                    alt={item.name}
+                                    className="w-full h-auto mt-2"
+                                />
+
+                                <p className="text-gray-700">
+                                    <strong></strong> {item.description}
+                                    </p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Categoría:</strong> {item.categoryName}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Condición:</strong> {item.condition}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Publicado por:</strong> {item.userName}
+                                </p>
+                            </div>
         </div>
       ))}
     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // Para capturar el ID desde la URL
-import { AgreementRequest } from "../interfaces/agreement/agreementRequest";
-import { Agreement } from "../services/agreement/agreement";
+import { AgreementRequest } from "../interfaces/agreement/AgreementRequest";
+import { Agreement } from "../services/agreement/Agreement";
 import { useAuth } from "../context/AuthProvider";
 import { ItemResponse } from "@interfaces/item/ItemResponse";
 import { item } from "../services/item/item";

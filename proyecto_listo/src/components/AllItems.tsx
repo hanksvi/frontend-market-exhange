@@ -5,7 +5,9 @@ import { category } from "../services/category/category";
 import { ItemResponse } from "../interfaces/item/ItemResponse";
 import { CategoryResponse } from "../interfaces/category/CategoryResponse";
 import { useAuth } from "../context/AuthProvider";
-import {usuario} from "../services/user/user"
+import {usuario} from "../services/user/user";
+import { fetchImage } from "../services/image/image"; // Nueva función
+
 
 export default function AllItems() {
     const auth = useAuth();
@@ -19,7 +21,7 @@ export default function AllItems() {
     const [role, setRole] = useState<string | null>(null); // Inicializa como null para manejar mejor el estado
     const [loading, setLoading] = useState<boolean>(true);
     const [userId, setUserId] = useState<number | null>(null); // ID del usuario autenticado
-    
+    const [imageUrls, setImageUrls] = useState<{ [key: number]: string }>({});
 
 
     useEffect(() => {
@@ -58,7 +60,8 @@ export default function AllItems() {
                 const allCategories = await category.getAllCategories();
                 setItems(filteredItems);
                 setFilteredItems(filteredItems);
-                setCategories(allCategories);
+                setCategories(allCategories);                  
+
             } catch (error) {
                 console.error("Error al obtener los datos:", error);
                 setErrorMessage("Error al obtener los datos.");
@@ -71,6 +74,32 @@ export default function AllItems() {
             fetchData();
         }
     }, [role]);
+
+    useEffect(() => {
+        const loadImages = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            if (!accessToken) {
+                console.error("No se encontró un token de autenticación.");
+                return;
+            }
+    
+            const imagePromises = items.map(async (item) => {
+                try {
+                    const imageUrl = await fetchImage(`http://localhost:8080${item.imageUrl}`, accessToken);
+                    return { id: item.id, url: imageUrl };
+                } catch {
+                    return { id: item.id, url: "/default-placeholder.png" };
+                }
+            });
+    
+            const images = await Promise.all(imagePromises);
+            setImageUrls(images.reduce((acc, img) => ({ ...acc, [img.id]: img.url }), {}));
+        };
+    
+        if (items.length > 0) {
+            loadImages();
+        }
+    }, [items]); // Ejecuta esto solo cuando items cambie
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const term = event.target.value.toLowerCase();
@@ -185,12 +214,20 @@ export default function AllItems() {
                         >
                             <div>
                                 <h3 className="text-lg font-bold text-blue-600">{item.name}</h3>
-                                <p className="text-gray-700">{item.description}</p>
+                                <img
+                                    src={imageUrls[item.id] || "/default-placeholder.png"}
+                                    alt={item.name}
+                                    className="w-full h-auto mt-2"
+                                />
+
+                                <p className="text-gray-700">
+                                    <strong></strong> {item.description}
+                                    </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Categoría:</strong> {item.categoryName}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    <strong>Estado:</strong> {item.status}
+                                    <strong>Condición:</strong> {item.condition}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Publicado por:</strong> {item.userName}

@@ -1,6 +1,6 @@
 import Api from "../../apis/api"; // Importa la configuración de tu cliente Axios
-import { AgreementRequest } from "../../interfaces/agreement/agreementRequest";
-import { AgreementResponse } from "../../interfaces/agreement/agreementResponse";
+import { AgreementRequest } from "../../interfaces/agreement/AgreementRequest";
+import { AgreementResponse } from "../../interfaces/agreement/AgreementResponse";
 
 export const Agreement = {
     /**
