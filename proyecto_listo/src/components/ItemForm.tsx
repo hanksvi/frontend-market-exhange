@@ -3,6 +3,7 @@ import { category } from "../services/category/category";
 import { usuario } from "../services/user/user"; // Importa el servicio de usuario
 import { CategoryResponse } from "../interfaces/category/CategoryResponse";
 import { item } from "../services/item/item";
+import { useNavigate } from "react-router-dom";
 
 interface ItemFormProps {
   onSubmitSuccess: (response: any) => void;
@@ -10,11 +11,15 @@ interface ItemFormProps {
 }
 
 export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormProps) {
+  const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     condition: "NEW",
   });
+
+
   const [image, setImage] = useState<File | null>(null); // Estado para la imagen
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -69,6 +74,7 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     if (selectedCategory === null) {
       setErrorMessage("Por favor selecciona una categoría.");
@@ -86,8 +92,7 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
     }
 
     try {
-      setErrorMessage("Datos enviados");
-      setTimeout(() => setErrorMessage(null), 4000);
+      setErrorMessage(null);
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
         formDataToSend.append("description", formData.description);
@@ -104,6 +109,14 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
         
         const response = await item.createItem(formDataToSend); // Cambiar a FormData
         onSubmitSuccess(response);
+
+      setErrorMessage(null);
+      setSuccessMessage("Ítem registrado exitosamente.");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+
+
     } catch (error: unknown) {
         if (error instanceof Error) {
             setErrorMessage(`Error al registrar el ítem: ${error.message}`);
@@ -123,6 +136,8 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
         <h2 className="text-2xl font-bold mb-6 text-center">Registrar Ítem</h2>
 
         {errorMessage && <div className="text-red-600 text-sm mb-4 text-center">{errorMessage}</div>}
+        {successMessage && <div className="text-green-600 text-sm mb-4 text-center">{successMessage}</div>}
+
 
         <div className="mb-4">
           <input
