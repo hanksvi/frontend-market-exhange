@@ -5,6 +5,8 @@ export interface AgreementResponse {
     itemFinName: string; // Nombre del ítem ofrecido por el receptor
     iniUsername: string;
     finUsername: string;
-    id_Ini: number; // Nombre del usuario iniciador
-    id_Fin: number; // Nombre del usuario receptor
+    id_Ini: number; // id del usuario iniciador
+    id_Fin: number; // id del usuario receptor
+    id_itemIni: number;
+    id_itemFin: number;
 }

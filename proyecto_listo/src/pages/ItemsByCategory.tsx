@@ -1,14 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ItemResponse } from "../interfaces/item/ItemResponse";
 import { item } from "../services/item/item"; // Servicio de ítems
 import { fetchImage } from "../services/image/image"; // Nueva función
+import { useAuth } from "../context/AuthProvider";
 
 export default function CategoryItemsPage() {
+  const auth = useAuth();
   const { id } = useParams<{ id: string }>();
   const [items, setItems] = useState<ItemResponse[]>([]);
   const [imageUrls, setImageUrls] = useState<{ [key: number]: string }>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate(); // Hook para redirigir
+  const [role, setRole] = useState<string | null>(null); // Inicializa como null para manejar mejor el estado
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+        const token = auth.getAccessToken();
+
+        if (token) {
+            try {
+                const decodedToken: any = JSON.parse(atob(token.split(".")[1]));
+                setRole(decodedToken.role || "USER");
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+                setRole("USER"); // Fallback en caso de error
+            }
+        } else {
+            setRole("USER");
+        }
+    };
+
+    fetchUserRole();
+}, [auth]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -48,6 +72,11 @@ export default function CategoryItemsPage() {
 
   if (!items.length) return <div>No hay ítems en esta categoría.</div>;
 
+  const handleTrade = (itemId: number) => {
+    // Redirige a la página de acuerdos pasando el ID del ítem como parámetro
+    navigate(`/dashboard/agreements/${itemId}`);
+};
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
       {items.map((item) => (
@@ -73,6 +102,14 @@ export default function CategoryItemsPage() {
                                     <strong>Publicado por:</strong> {item.userName}
                                 </p>
                             </div>
+                            {role === "USER" && (
+                                <button
+                                    onClick={() => handleTrade(item.id)}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                                >
+                                    Tradear
+                                </button>
+                            )}
         </div>
       ))}
     </div>

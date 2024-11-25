@@ -16,4 +16,6 @@ import lombok.Getter;
         private String finUsername;
         private Long id_Ini;
         private Long id_Fin;
+        private Long id_itemIni;
+        private Long id_itemFin;
     }

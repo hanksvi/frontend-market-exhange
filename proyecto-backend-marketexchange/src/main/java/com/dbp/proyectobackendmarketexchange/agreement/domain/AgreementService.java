@@ -63,6 +63,8 @@ public class AgreementService {
                     responseDto.setId_Ini(agreement.getInitiator().getId());  // Email del iniciador
                     responseDto.setIniUsername(agreement.getInitiator().getEmail());
                     responseDto.setFinUsername(agreement.getRecipient().getEmail());
+                    responseDto.setId_itemIni(agreement.getItem_ini().getId());
+                    responseDto.setId_itemFin(agreement.getItem_fin().getId());
 
                     return responseDto;
                 })
@@ -112,7 +114,8 @@ public class AgreementService {
         responseDto.setId_Fin(usuarioFin.getId());
         responseDto.setFinUsername(usuarioFin.getEmail());
         responseDto.setIniUsername(usuarioIni.getEmail());
-
+        responseDto.setId_itemIni(agreement.getItem_ini().getId());
+        responseDto.setId_itemFin(agreement.getItem_fin().getId());
         return responseDto;
     }
 
@@ -130,7 +133,8 @@ public class AgreementService {
         responseDto.setId_Fin(agreement.getRecipient().getId());
         responseDto.setFinUsername(agreement.getRecipient().getEmail());
         responseDto.setIniUsername(agreement.getInitiator().getEmail());
-
+        responseDto.setId_itemIni(agreement.getItem_ini().getId());
+        responseDto.setId_itemFin(agreement.getItem_fin().getId());
         return responseDto;
     }
 
@@ -164,7 +168,8 @@ public class AgreementService {
         responseDto.setId_Fin(savedAgreement.getRecipient().getId());
         responseDto.setFinUsername(savedAgreement.getRecipient().getEmail());
         responseDto.setIniUsername(savedAgreement.getInitiator().getEmail());
-
+        responseDto.setId_itemIni(agreement.getItem_ini().getId());
+        responseDto.setId_itemFin(agreement.getItem_fin().getId());
         return responseDto;
     }
 
@@ -197,7 +202,8 @@ public class AgreementService {
         responseDto.setId_Fin(savedAgreement.getInitiator().getId());
         responseDto.setFinUsername(savedAgreement.getRecipient().getEmail());
         responseDto.setIniUsername(savedAgreement.getInitiator().getEmail());
-
+        responseDto.setId_itemIni(agreement.getItem_ini().getId());
+        responseDto.setId_itemFin(agreement.getItem_fin().getId());
         return responseDto;
     }
 
@@ -220,6 +226,8 @@ public class AgreementService {
         responseDto.setId_Fin(existingAgreement.getRecipient().getId());
         responseDto.setIniUsername(existingAgreement.getInitiator().getEmail());
         responseDto.setFinUsername(existingAgreement.getRecipient().getEmail());
+        responseDto.setId_itemIni(existingAgreement.getItem_ini().getId());
+        responseDto.setId_itemFin(existingAgreement.getItem_fin().getId());
         return responseDto;
     }
 
