@@ -36,4 +36,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 
+    @Bean(name = "UserDetailsService")
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            Usuario user = usuarioRepository
+                    .findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            return (UserDetails) user;
+        };
+    }
+
 }

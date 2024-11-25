@@ -61,9 +61,6 @@ export default function Navbar() {
                                 <Link to="/dashboard/category" className="hover:text-purple-500">
                                     Categorías
                                 </Link>
-                                <Link to="/dashboard/agreement/:id" className="hover:text-purple-500">
-                                    Ayuda
-                                </Link>
                             </>
                         )}
                         {role === "ADMIN" && (
@@ -71,9 +68,7 @@ export default function Navbar() {
                                 <Link to="/dashboard" className="hover:text-purple-500">
                                     MarketExchange
                                 </Link>
-                                <Link to="/dashboard/category/create" className="hover:text-purple-500">
-                                    Crear Categoría
-                                </Link>
+                             
                                 <Link to="/dashboard/category" className="hover:text-purple-500">
                                     Categorías
                                 </Link>

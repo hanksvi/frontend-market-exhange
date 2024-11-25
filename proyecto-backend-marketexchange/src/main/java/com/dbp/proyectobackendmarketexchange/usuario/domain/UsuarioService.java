@@ -1,10 +1,12 @@
 package com.dbp.proyectobackendmarketexchange.usuario.domain;
 
+import com.dbp.proyectobackendmarketexchange.auth.dto.JwtAuthResponse;
 import com.dbp.proyectobackendmarketexchange.auth.utils.AuthorizationUtils;
 import com.dbp.proyectobackendmarketexchange.event.usuario.UsuarioCreadoEvent;
 import com.dbp.proyectobackendmarketexchange.exception.InvalidUserFieldException;
 import com.dbp.proyectobackendmarketexchange.exception.ResourceNotFoundException;
 import com.dbp.proyectobackendmarketexchange.exception.UnauthorizeOperationException;
+import com.dbp.proyectobackendmarketexchange.item.domain.ItemService;
 import com.dbp.proyectobackendmarketexchange.usuario.dto.UsuarioRequestDto;
 import com.dbp.proyectobackendmarketexchange.usuario.dto.UsuarioResponseDto;
 import com.dbp.proyectobackendmarketexchange.usuario.infrastructure.UsuarioRepository;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,8 +36,13 @@ public class UsuarioService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    
+
     @Autowired
     private AuthorizationUtils authorizationUtils;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UsuarioResponseDto registrarUsuario(UsuarioRequestDto requestDTO) {
         // Validar nombre
@@ -121,7 +129,10 @@ public class UsuarioService {
         }
 
         modelMapper.map(requestDTO, usuarioExistente);
+        usuarioExistente.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         usuarioRepository.save(usuarioExistente);
+        // Generar la respuesta con el token JWT
+
 
         return modelMapper.map(usuarioExistente, UsuarioResponseDto.class);
     }
@@ -132,7 +143,10 @@ public class UsuarioService {
 
         if (!authorizationUtils.isAdminOrResourceOwner(usuario.getId())) {
             throw new UnauthorizeOperationException("You do not have permission to delete this user.");
+
         }
+
+
         usuarioRepository.delete(usuario);
     }
 
@@ -158,15 +172,7 @@ public class UsuarioService {
     }
 
 
-    @Bean(name = "UserDetailsService")
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            Usuario user = usuarioRepository
-                    .findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            return (UserDetails) user;
-        };
-    }
+
 
 
 }

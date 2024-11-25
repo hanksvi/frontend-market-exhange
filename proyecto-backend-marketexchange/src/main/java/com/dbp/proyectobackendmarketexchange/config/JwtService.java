@@ -3,11 +3,13 @@ package com.dbp.proyectobackendmarketexchange.config;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dbp.proyectobackendmarketexchange.usuario.domain.UserDetailsServiceImpl;
 import com.dbp.proyectobackendmarketexchange.usuario.domain.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,7 +27,7 @@ public class JwtService {
     private String secret;
 
     @Autowired
-    private UsuarioService userService;
+    private UserDetailsServiceImpl userService;
 
     public String extrackUserName(String token) {
         return JWT.decode(token).getSubject();

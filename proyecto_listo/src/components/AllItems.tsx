@@ -260,13 +260,13 @@ export default function AllItems() {
                                 <div className="flex gap-4">
                                     <button
                                         onClick={() => handleApprove(item.id)}
-                                        className="bg-green-600 hover:bg-green-300 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
+                                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                     >
                                         Aprobar
                                     </button>
                                     <button
                                         onClick={() => handleDeny(item.id)}
-                                         className="bg-red-600 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
+                                         className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                     >
                                         Denegar
                                     </button>
@@ -275,7 +275,7 @@ export default function AllItems() {
                             {role === "USER" && (
                                 <button
                                     onClick={() => handleTrade(item.id)}
-                                    className="bg-white hover:bg-purple-600 text-purple-600 font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
+                                    className="bg-white hover:bg-gray-200 text-purple-600 font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                 >
                                     Tradear
                                 </button>

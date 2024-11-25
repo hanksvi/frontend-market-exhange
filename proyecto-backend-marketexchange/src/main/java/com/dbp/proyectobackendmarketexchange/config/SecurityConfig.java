@@ -1,5 +1,6 @@
 package com.dbp.proyectobackendmarketexchange.config;
 
+import com.dbp.proyectobackendmarketexchange.usuario.domain.UserDetailsServiceImpl;
 import com.dbp.proyectobackendmarketexchange.usuario.domain.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +38,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
-    private UsuarioService userService;
+    private UserDetailsServiceImpl userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
