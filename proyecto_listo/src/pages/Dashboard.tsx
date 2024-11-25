@@ -19,8 +19,7 @@ export default function Dashboard() {
     return (
         <div className="flex flex-col lg:flex-row h-scren">
             {/* Sidebar Izquierdo */}
-            <div className="flex-1 bg-white shadow-lg p-6 rounded-lg border border-green-300">
-                <h1 className="text-3xl font-bold text-green-800 mb-6">Dashboard</h1>
+            <div className="flex-1 bg-purple-50 shadow-lg p-6 rounded-lg border ">
                 {role === "ADMIN" ? (
                     <div>
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">Publicaciones Pendientes</h2>
@@ -35,7 +34,7 @@ export default function Dashboard() {
 
             {/* Sidebar Derecho: Tradeos recientes (Solo visible para usuarios normales) */}
             {role !== "ADMIN" && (
-                <div className="lg:w-1/4 bg-white shadow-lg p-6 rounded-lg border-l border-green-300">
+                <div className="lg:w-1/4 bg-white shadow-lg p-6 rounded-lg border-l border-gray-300">
                     <h1 className="text-2xl font-bold text-green-800 mb-6">Tradeos Recientes</h1>
                     <UserTradesAccepted /> {/* Renderiza el componente de tradeos aprobados */}
                 </div>

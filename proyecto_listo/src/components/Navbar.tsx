@@ -45,60 +45,57 @@ export default function Navbar() {
     //psuhwa ps
     
     return (
-        <nav className="flex justify-between items-center bg-gray-800 text-white p-4">
+        <nav className="flex justify-between items-center bg-white text-gris-700 py-4 px-8 shadow">
             {/* Sección izquierda del navbar */}
-            <div className="flex space-x-4">
-                {auth.isAuthenticated && (
-
+            <div className="flex space-x-8 text-sm font-semibold">
+                {auth.isAuthenticated ? (
                     <>
-                    {role === "USER" && (
-                        <>
-                        <Link to= "/dashboard" className="hover:text-gray-300">
-                        Home
-                        </Link>
-                        
-                        <Link to="/dashboard/item/create" className="hover:text-gray-300">
-                        Publicar
-
-                    </Link>
-                    <Link to="/dashboard/category" className="hover:text-gray-300">
-
-                        Categorías
-                    </Link>
-                    <Link to="/dashboard/agreement/:id" className="hover:text-gray-300">
-                        Ayuda
-                    </Link>
+                        {role === "USER" && (
+                            <>
+                                <Link to="/dashboard" className="hover:text-purple-500">
+                                    MarketExchange
+                                </Link>
+                                <Link to="/dashboard/item/create" className="hover:text-purple-500">
+                                    Publicar
+                                </Link>
+                                <Link to="/dashboard/category" className="hover:text-purple-500">
+                                    Categorías
+                                </Link>
+                                <Link to="/dashboard/agreement/:id" className="hover:text-purple-500">
+                                    Ayuda
+                                </Link>
+                            </>
+                        )}
+                        {role === "ADMIN" && (
+                            <>
+                                <Link to="/dashboard" className="hover:text-purple-500">
+                                    MarketExchange
+                                </Link>
+                                <Link to="/dashboard/category/create" className="hover:text-purple-500">
+                                    Crear Categoría
+                                </Link>
+                                <Link to="/dashboard/category" className="hover:text-purple-500">
+                                    Categorías
+                                </Link>
+                            </>
+                        )}
                     </>
-                    )}
-                    {role === "ADMIN" && (
-                        <>
-                        <Link to= "/dashboard" className="hover:text-gray-300">
-                        Home
+                ) : (
+                    <>
+                        <Link to="/" className="hover:text-purple-500">
+                            MarketExchange
                         </Link>
-                        
-                        <Link to="/dashboard/category/create" className="hover:text-gray-300">
-                        Crear Categoria
-
-                    </Link>
-                    <Link to="/dashboard/category" className="hover:text-gray-300">
-
-                        Categorías
-                    </Link>
-                    </>
-                    )}
-                        
                     </>
                 )}
             </div>
-
+    
             {/* Sección derecha del navbar */}
-            <div className="relative">
+            <div className="flex items-center space-x-4">
                 {auth.isAuthenticated ? (
-                    
-                    <div>
+                    <div className="relative">
                         {/* Botón del dropdown */}
                         <button
-                            className="flex items-center bg-gray-700 p-2 rounded-full hover:bg-gray-600"
+                            className="flex items-center bg-purple-100 py-2 px-4 rounded-full hover:bg-purple-200 transition"
                             onClick={toggleDropdown}
                             aria-expanded={isDropdownOpen}
                             aria-label="Perfil"
@@ -119,10 +116,10 @@ export default function Navbar() {
                                 />
                             </svg>
                         </button>
-
+    
                         {/* Dropdown */}
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg">
+                            <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg z-10">
                                 <Link
                                     to="/dashboard/cuenta"
                                     onClick={closeDropdown}
@@ -143,14 +140,15 @@ export default function Navbar() {
                         )}
                     </div>
                 ) : (
-                    <div className="flex space-x-4">
-                        <Link to="/login" className="hover:text-gray-300 text-sm font-semibold">
-                            Login
-                        </Link>
-                        <Link to="/register" className="hover:text-gray-300 text-sm font-semibold">
-                            Register
-                        </Link>
-                    </div>
+                    <div className="flex items-center space-x-4">
+                    <Link to="/login" className="hover:text-purple-500 text-sm font-semibold">
+                        Inicia sesión
+                    </Link>
+                    <Link to="/register" className="bg-purple-700 text-white py-2 px-4 rounded-full hover:bg-purple-800 text-sm font-semibold">
+                        Regístrate
+                    </Link>
+                </div>
+                
                 )}
             </div>
         </nav>

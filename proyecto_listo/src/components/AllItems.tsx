@@ -179,13 +179,15 @@ export default function AllItems() {
     }
 
     return (
-        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mx-auto mt-10">
-            <h2 className="text-2xl font-bold text-blue-700 mb-4">Publicaciones Disponibles</h2>
+        
+        <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-5xl mx-auto mt-10">
+            <h2 className="text-2xl font-bold text-black mb-6">Publicaciones Disponibles</h2>
     
+            {/* Buscador */}
             <div className="mb-6">
                 <label
                     htmlFor="search"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-white mb-2"
                 >
                     Buscar por nombre:
                 </label>
@@ -195,14 +197,15 @@ export default function AllItems() {
                     value={searchTerm}
                     onChange={handleSearchChange}
                     placeholder="Escribe aquí para buscar ítems..."
-                    className="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                    className="w-full p-3 bg-gray-50 text-gray-700 rounded-md shadow-md focus:outline-none focus:ring focus:ring-purple-300"
                 />
             </div>
     
+            {/* Filtro de categorías */}
             <div className="mb-6">
                 <label
                     htmlFor="categories"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-white mb-2"
                 >
                     Filtrar por categoría:
                 </label>
@@ -210,7 +213,7 @@ export default function AllItems() {
                     id="categories"
                     value={selectedCategory ?? ""}
                     onChange={handleCategoryChange}
-                    className="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                    className="w-full p-3 bg-gray-50 text-gray-700 rounded-md shadow-md focus:outline-none focus:ring focus:ring-purple-300"
                 >
                     <option value="">Todas las categorías</option>
                     {categories.map((cat) => (
@@ -221,50 +224,49 @@ export default function AllItems() {
                 </select>
             </div>
     
+            {/* Mensaje de error */}
             {errorMessage && (
                 <div className="text-red-500 text-center mb-4">{errorMessage}</div>
             )}
     
+            {/* Lista de publicaciones */}
             {filteredItems.length > 0 ? (
-                // Ajustar aquí para mostrar en un diseño de dos columnas
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {filteredItems.map((item) => (
                         <li
                             key={item.id}
-                            className="border border-gray-300 p-4 rounded shadow-sm hover:shadow-md flex flex-col gap-4"
+                            className="bg-purple-600 border border-purple-400 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
                         >
                             <div>
-                                <h3 className="text-lg font-bold text-blue-600">{item.name}</h3>
+                                <h3 className="text-lg font-bold text-white">{item.name}</h3>
                                 <img
                                     src={imageUrls[item.id] || "/default-placeholder.png"}
                                     alt={item.name}
-                                    className="w-full h-auto mt-2"
+                                    className="w-full h-auto mt-2 rounded-lg"
                                 />
-    
-                                <p className="text-gray-700">
-                                    <strong></strong> {item.description}
-                                </p>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-gray-200 mt-4">{item.description}</p>
+                                <p className="text-lg font text-gray-300">
                                     <strong>Categoría:</strong> {item.categoryName}
                                 </p>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-lg font-sm text-gray-300">
                                     <strong>Condición:</strong> {item.condition}
                                 </p>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-lg font-sm text-gray-300">
                                     <strong>Publicado por:</strong> {item.userName}
                                 </p>
                             </div>
+                         
                             {role === "ADMIN" && (
                                 <div className="flex gap-4">
                                     <button
                                         onClick={() => handleApprove(item.id)}
-                                        className="bg-green-500 text-white px-4 py-2 rounded"
+                                        className="bg-green-600 hover:bg-green-300 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                     >
                                         Aprobar
                                     </button>
                                     <button
                                         onClick={() => handleDeny(item.id)}
-                                        className="bg-red-500 text-white px-4 py-2 rounded"
+                                         className="bg-red-600 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                     >
                                         Denegar
                                     </button>
@@ -273,16 +275,17 @@ export default function AllItems() {
                             {role === "USER" && (
                                 <button
                                     onClick={() => handleTrade(item.id)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                                    className="bg-white hover:bg-purple-600 text-purple-600 font-bold py-2 px-4 rounded-md mt-4 w-full transition-colors duration-300"
                                 >
                                     Tradear
                                 </button>
                             )}
+
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-500">
+                <p className="text-gray-200">
                     {searchTerm || selectedCategory
                         ? "No se encontraron ítems que coincidan con los filtros aplicados."
                         : "No hay ítems publicados."}

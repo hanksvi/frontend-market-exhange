@@ -128,7 +128,7 @@ export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormPro
   }
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <section className="flex flex-col items-center justify-center min-h-screen bg-white-100">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white shadow-md rounded px-8 py-6 border-4 border-blue-700"

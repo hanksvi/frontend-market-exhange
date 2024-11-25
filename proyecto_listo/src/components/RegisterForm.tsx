@@ -49,10 +49,10 @@ export default function RegisterForm({ formData, setFormData, onSubmit }: Regist
     }
 
     return (
-        <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <section className="flex flex-col items-center justify-center min-h-screen bg-white-100">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-md bg-white shadow-md rounded px-8 py-6 border-4 border-blue-700"
+                className="w-full max-w-md bg-white shadow-md rounded px-8 py-6 border-4  border-purple-700"
                 style={{ maxWidth: "24rem" }} // Define el tamaño máximo en rem para mayor consistencia
             >
                 <h2 className="text-2xl font-bold mb-6 text-center">Registro</h2>
@@ -181,7 +181,7 @@ export default function RegisterForm({ formData, setFormData, onSubmit }: Regist
 
                 <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-transform duration-300 hover:scale-105"
+                    className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-transform duration-300 hover:scale-105"
                 >
                     Registrarse
                 </button>
