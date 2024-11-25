@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import logo from "../img/logo_market.png"
+import logo from "/img/logos_Mesa de trabajo 1.png"
 import joya2 from "../img/products/joya2.jpg";
 import joya from "/img/seleccion/pexels-kindelmedia-6994107.jpg";
 import joya4 from "/img/seleccion/pexels-mizunokozuki-13432260.jpg";
