@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import logo from "../img/logo_market.png"
-import joya2 from "../img/products/joya2.jpeg";
-import joya from "../img/products/joya.jpeg";
-import joya4 from "../img/products/joya4.jpeg";
+import joya2 from "../img/products/joya2.jpg";
+import joya from "/img/seleccion/pexels-kindelmedia-6994107.jpg";
+import joya4 from "/img/seleccion/pexels-mizunokozuki-13432260.jpg";
 import joya5 from "../img/foto_1.jpg";
-import joya3 from "../img/products/joya3.jpeg";
-import joya6 from "../img/products/joya6.jpeg";
-import joya10 from "../img/products/joya10.jpeg";
+import joya3 from "/img/seleccion/pexels-ivan-samkov-8962868.jpg";
+import joya6 from "/img/seleccion/pexels-cottonbro-6591429.jpg";
+import joya10 from "/img/seleccion/pexels-vlada-karpovich-4668356.jpg";
 import personas from "../img/personas.jpg";
 import momo from "../img/momo.jpg";
 import celular from "../img/celu.jpg";
@@ -69,7 +69,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-            {[{ img: joya2, desc: "Lindos brazaletes para pareja" }, { img: joya, desc: "Brazaletes de colores para regalar" }, { img: joya4, desc: "Lindos aretes con diseños especiales" }, { img: joya5, desc: "Collares de colores para regalar" }].map((item, idx) => (
+            {[{ img: joya2, desc: "Intercambios" }, { img: joya, desc: "Intercambia con cualquier persona" }, { img: joya4, desc: "Intercambios" }, { img: joya5, desc: "trueque digital" }].map((item, idx) => (
               <div key={idx} className="relative group">
                 <img src={item.img} alt={item.desc} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-purple-800 opacity-0 group-hover:opacity-80 flex items-center justify-center transition-opacity">
