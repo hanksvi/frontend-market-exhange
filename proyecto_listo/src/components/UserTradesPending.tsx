@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { usuario } from "../services/user/user"; // Servicio de usuario
 import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
-import { AgreementResponse } from "../interfaces/agreement/agreementResponse"; // Interfaz de respuesta de acuerdo
+import { AgreementResponse } from "../interfaces/agreement/AgreementResponse"; // Interfaz de respuesta de acuerdo
+import { useNavigate } from "react-router-dom";
 
 export default function UserTradesPending() {
     const [trades, setTrades] = useState<AgreementResponse[]>([]);
@@ -9,7 +10,7 @@ export default function UserTradesPending() {
     const [userId, setUserId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     // Obtener el ID del usuario autenticado al montar el componente
     useEffect(() => {
         async function fetchUserId() {
@@ -84,6 +85,10 @@ export default function UserTradesPending() {
         }
     };
 
+    const handleTradeClick = (tradeId: number) => {
+        navigate(`/dashboard/agreements/${tradeId}`); // Navega a la ruta específica
+    };
+
     return (
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl mx-auto mt-10">
             <h2 className="text-2xl font-bold text-blue-700 mb-4">Mis Tradeos Pendientes</h2>
@@ -115,9 +120,10 @@ export default function UserTradesPending() {
                 <ul className="space-y-4">
                     {filteredTrades.map((trade) => (
                         <li
+                            onClick={() => handleTradeClick(trade.id)} // Navegar al hacer clic
                             key={trade.id}
                             className="border border-gray-300 p-4 rounded shadow-sm hover:shadow-md"
-                        >
+                        >   
                             <h3 className="text-lg font-bold text-blue-600">Trade ID: {trade.id}</h3>
                             <p className="text-gray-700">
                                 <strong>Ítem Ofrecido:</strong> {trade.itemIniName}

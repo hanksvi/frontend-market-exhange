@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa el hook useNavigate
 import { usuario } from "../services/user/user"; // Servicio de usuario
 import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
-import { AgreementResponse } from "../interfaces/agreement/agreementResponse"; // Interfaz de respuesta de acuerdo
+import { AgreementResponse } from "../interfaces/agreement/AgreementResponse"; // Interfaz de respuesta de acuerdo
 
-export default function UserTradesAceppted() {
+export default function UserTrades() {
     const [trades, setTrades] = useState<AgreementResponse[]>([]); // Estado para almacenar los tradeos
     const [filteredTrades, setFilteredTrades] = useState<AgreementResponse[]>([]); // Estado para los tradeos filtrados
     const [userId, setUserId] = useState<number | null>(null); // ID del usuario autenticado
     const [searchTerm, setSearchTerm] = useState<string>(""); // Término de búsqueda
     const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para errores
+    const navigate = useNavigate(); // Para navegar a otras rutas
 
     // Obtener el ID del usuario autenticado al montar el componente
     useEffect(() => {
@@ -57,7 +59,11 @@ export default function UserTradesAceppted() {
         );
         setFilteredTrades(filtered);
     }
-    console.log(trades)
+
+    // Manejar la navegación al hacer clic en un trade
+    const handleTradeClick = (tradeId: number) => {
+        navigate(`/dashboard/agreements/${tradeId}`); // Navega a la ruta específica
+    };
 
     return (
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl mx-auto mt-10">
@@ -91,7 +97,8 @@ export default function UserTradesAceppted() {
                     {filteredTrades.map((trade) => (
                         <li
                             key={trade.id}
-                            className="border border-gray-300 p-4 rounded shadow-sm hover:shadow-md"
+                            className="border border-gray-300 p-4 rounded shadow-sm hover:shadow-md cursor-pointer"
+                            onClick={() => handleTradeClick(trade.id)} // Navegar al hacer clic
                         >
                             <h3 className="text-lg font-bold text-blue-600">Trade ID: {trade.id}</h3>
                             <p className="text-gray-700">

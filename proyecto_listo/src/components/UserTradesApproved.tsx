@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { usuario } from "../services/user/user"; // Servicio de usuario
 import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
-import { AgreementResponse } from "../interfaces/agreement/agreementResponse"; // Interfaz de respuesta de acuerdo
+import { AgreementResponse } from "../interfaces/agreement/AgreementResponse"; // Interfaz de respuesta de acuerdo
 
 export default function UserTradesAccepted() {
   const [trades, setTrades] = useState<AgreementResponse[]>([]); // Estado para almacenar los tradeos

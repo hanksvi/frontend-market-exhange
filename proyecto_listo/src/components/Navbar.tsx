@@ -65,7 +65,7 @@ export default function Navbar() {
 
                         Categorías
                     </Link>
-                    <Link to="/dashboard/agreement" className="hover:text-gray-300">
+                    <Link to="/dashboard/agreement/:id" className="hover:text-gray-300">
                         Ayuda
                     </Link>
                     </>

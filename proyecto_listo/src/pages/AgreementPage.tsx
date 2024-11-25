@@ -36,8 +36,13 @@ export default function AgreementPage() {
             if (!userId) return;
             try {
                 const userItems = await item.getItemsByUser(userId);
-                setItems(userItems);
-                setFilteredItems(userItems);
+                const userItemsFilter = userItems
+          .filter(
+            (item) =>
+              item.status == "APPROVED"
+          )
+                setItems(userItemsFilter);
+                setFilteredItems(userItemsFilter);
             } catch (error) {
                 setErrorMessage("Error al obtener los ítems del usuario.");
             }

@@ -7,6 +7,7 @@ import { CategoryResponse } from "../interfaces/category/CategoryResponse";
 import { useAuth } from "../context/AuthProvider";
 import {usuario} from "../services/user/user";
 import { fetchImage } from "../services/image/image"; // Nueva función
+import { Agreement } from "../services/agreement/Agreement";
 
 
 export default function AllItems() {
@@ -149,10 +150,29 @@ export default function AllItems() {
         }
     };
 
-    const handleTrade = (itemId: number) => {
-        // Redirige a la página de acuerdos pasando el ID del ítem como parámetro
-        navigate(`/dashboard/agreements/${itemId}`);
+    const handleTrade = async (itemId: number) => {
+        try {
+            // Verificar si el usuario ya tiene un tradeo con este ítem
+            const allAgreements = await Agreement.getAllAgreements(); // Asumiendo que tienes un método para obtener todos los acuerdos
+            const existingAgreement = allAgreements.find(
+                (agreement) =>
+                    (agreement.id_itemFin === itemId || agreement.id_itemIni === itemId) &&
+                    (agreement.id_Ini === userId || agreement.id_Fin === userId)
+            );
+    
+            if (existingAgreement) {
+                // Si ya existe un tradeo, redirige a la página del tradeo existente
+                navigate(`/dashboard/agreements/${existingAgreement.id}`);
+            } else {
+                // Si no existe, redirige al flujo normal de crear un tradeo
+                navigate(`/dashboard/agreements/item/${itemId}`);
+            }
+        } catch (error) {
+            console.error("Error al verificar los tradeos existentes:", error);
+            alert("Hubo un problema al procesar la solicitud.");
+        }
     };
+    
 
     if (loading) {
         return <div>Cargando ítems...</div>;
