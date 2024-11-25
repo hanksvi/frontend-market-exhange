@@ -103,6 +103,9 @@ export default function AgreementByIdPage() {
                                 />
                                 <p>{receptorItem.description}</p>
                                 <p className="text-sm text-gray-500">
+                                    <strong>Publicado por:</strong> {receptorItem.userName}
+                                </p>
+                                <p className="text-sm text-gray-500">
                                     <strong>Categoría:</strong> {receptorItem.categoryName}
                                 </p>
                                 <p className="text-sm text-gray-500">
@@ -125,6 +128,9 @@ export default function AgreementByIdPage() {
                                     className="w-full h-auto mt-2"
                                 />
                                 <p>{iniciadorItem.description}</p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Publicado por:</strong> {iniciadorItem.userName}
+                                </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Categoría:</strong> {iniciadorItem.categoryName}
                                 </p>

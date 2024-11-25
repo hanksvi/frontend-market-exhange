@@ -142,18 +142,25 @@ export default function UserTradesPending() {
                             </p>
                             <div className="flex justify-end gap-4 mt-4">
                                 <button
-                                    onClick={() => handleApprove(trade.id)}
+                                    onClick={(event) => {
+                                        event.stopPropagation(); // Detener la propagación del clic
+                                        handleApprove(trade.id);
+                                    }}
                                     className="bg-green-500 text-white px-4 py-2 rounded"
                                 >
                                     Aprobar
                                 </button>
                                 <button
-                                    onClick={() => handleReject(trade.id)}
+                                    onClick={(event) => {
+                                        event.stopPropagation(); // Detener la propagación del clic
+                                        handleReject(trade.id);
+                                    }}
                                     className="bg-red-500 text-white px-4 py-2 rounded"
                                 >
                                     Denegar
                                 </button>
                             </div>
+
                         </li>
                     ))}
                 </ul>

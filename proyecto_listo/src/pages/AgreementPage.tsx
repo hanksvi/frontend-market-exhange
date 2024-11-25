@@ -111,6 +111,9 @@ export default function AgreementPage() {
                             <h3 className="text-lg font-bold">{selectedItem.name}</h3>
                             <p>{selectedItem.description}</p>
                             <p className="text-sm text-gray-500">
+                                <strong>Publicado por:</strong> {selectedItem.userName}
+                            </p>
+                            <p className="text-sm text-gray-500">
                                 <strong>Categoría:</strong> {selectedItem.categoryName}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -172,6 +175,9 @@ export default function AgreementPage() {
                                 >
                                     <h3 className="text-lg font-bold text-blue-600">{item.name}</h3>
                                     <p className="text-gray-700">{item.description}</p>
+                                    <p className="text-sm text-gray-500">
+                                        <strong>Publicado por:</strong> {item.userName}
+                                    </p>
                                     <p className="text-sm text-gray-500">
                                         <strong>Categoría:</strong> {item.categoryName}
                                     </p>

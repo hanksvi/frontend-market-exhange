@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { usuario } from "../services/user/user"; // Servicio de usuario
 import { Agreement } from "../services/agreement/Agreement"; // Servicio de acuerdos
 import { AgreementResponse } from "../interfaces/agreement/AgreementResponse"; // Interfaz de respuesta de acuerdo
+import { useNavigate } from "react-router-dom";
 
 export default function UserTradesAccepted() {
   const [trades, setTrades] = useState<AgreementResponse[]>([]); // Estado para almacenar los tradeos
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para errores
   const [userId, setUserId] = useState<number | null>(null); // ID del usuario autenticado
-
+  const navigate = useNavigate();
   // Obtener el ID del usuario autenticado al montar el componente
   useEffect(() => {
     async function fetchUserId() {
@@ -45,6 +46,10 @@ export default function UserTradesAccepted() {
     fetchUserTrades();
   }, [userId]);
 
+  const handleTradeClick = (tradeId: number) => {
+    navigate(`/dashboard/agreements/${tradeId}`); // Navega a la ruta específica
+};
+
   return (
     <div className="bg-white shadow-md rounded-lg p-4">
       <h2 className="text-xl font-bold text-blue-700 mb-4">
@@ -59,7 +64,8 @@ export default function UserTradesAccepted() {
         <ul className="space-y-4">
           {trades.map((trade) => (
             <li
-              key={trade.id}
+              key={trade.id} 
+               onClick={() => handleTradeClick(trade.id)} // Navegar al hacer clic
               className="border border-gray-300 p-4 rounded shadow-sm hover:shadow-md"
             >
               <h3 className="text-lg font-bold text-blue-600">
