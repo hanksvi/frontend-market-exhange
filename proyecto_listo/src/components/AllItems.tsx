@@ -180,8 +180,8 @@ export default function AllItems() {
 
     return (
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mx-auto mt-10">
-            <h2 className="text-2xl font-bold text-blue-700 mb-4">Lista de Publicaciones</h2>
-
+            <h2 className="text-2xl font-bold text-blue-700 mb-4">Publicaciones Disponibles</h2>
+    
             <div className="mb-6">
                 <label
                     htmlFor="search"
@@ -198,7 +198,7 @@ export default function AllItems() {
                     className="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
                 />
             </div>
-
+    
             <div className="mb-6">
                 <label
                     htmlFor="categories"
@@ -220,13 +220,14 @@ export default function AllItems() {
                     ))}
                 </select>
             </div>
-
+    
             {errorMessage && (
                 <div className="text-red-500 text-center mb-4">{errorMessage}</div>
             )}
-
+    
             {filteredItems.length > 0 ? (
-                <ul className="space-y-4">
+                // Ajustar aquí para mostrar en un diseño de dos columnas
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredItems.map((item) => (
                         <li
                             key={item.id}
@@ -239,10 +240,10 @@ export default function AllItems() {
                                     alt={item.name}
                                     className="w-full h-auto mt-2"
                                 />
-
+    
                                 <p className="text-gray-700">
                                     <strong></strong> {item.description}
-                                    </p>
+                                </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Categoría:</strong> {item.categoryName}
                                 </p>
@@ -289,4 +290,5 @@ export default function AllItems() {
             )}
         </div>
     );
+    
 }

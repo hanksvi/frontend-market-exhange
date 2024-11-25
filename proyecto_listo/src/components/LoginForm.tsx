@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
-import api from "../apis/api";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate, Navigate } from "react-router-dom";
-// Importa las imágenes desde src/assets/img/ si están allí
 import idle1 from "../assets/img/idle/1.png";
 import idle2 from "../assets/img/idle/2.png";
 import idle3 from "../assets/img/idle/3.png";
 import idle4 from "../assets/img/idle/4.png";
 import idle5 from "../assets/img/idle/5.png";
-import read1 from "../assets/img/read/1.png";
-import read2 from "../assets/img/read/2.png";
-import read3 from "../assets/img/read/3.png";
-import read4 from "../assets/img/read/4.png";
 import cover1 from "../assets/img/cover/1.png";
 import cover2 from "../assets/img/cover/2.png";
 import cover3 from "../assets/img/cover/3.png";
@@ -23,18 +17,15 @@ import cover8 from "../assets/img/cover/8.png";
 import { LoginRequest } from "interfaces/auth/LoginRequest";
 import { login } from "../services/auth/login";
 
-
 const idleImages: string[] = [idle1, idle2, idle3, idle4, idle5];
-const readImages: string[] = [read1, read2, read3, read4];
 const coverImages: string[] = [cover1, cover2, cover3, cover4, cover5, cover6, cover7, cover8];
 
 export default function LoginForm() {
     const [formData, setFormData] = useState<LoginRequest>({ username: "", password: "" });
     const [monsterSrc, setMonsterSrc] = useState<string>(idleImages[0]);
     const [error, setError] = useState<string | null>(null);
-    const seguirPunteroMouse = useRef<boolean>(true);
-    const coverInterval = useRef<number | null>(null);
-    const descubrirInterval = useRef<number | null>(null);
+    const [imagesLoaded, setImagesLoaded] = useState<boolean>(false); // Estado para controlar precarga de imágenes
+    const currentTimeout = useRef<number | null>(null);
 
     const auth = useAuth();
     const navigate = useNavigate();
@@ -43,112 +34,66 @@ export default function LoginForm() {
         return <Navigate to="/dashboard" />;
     }
 
-    // Estado para manejar el tamaño de la ventana
-    const [windowSize, setWindowSize] = useState<{ anchoMitad: number; altoMitad: number }>({
-        anchoMitad: window.innerWidth / 2,
-        altoMitad: window.innerHeight / 2,
-    });
-
-    // Manejar redimensionamiento de ventana
+    // Precargar imágenes al cargar el componente
     useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                anchoMitad: window.innerWidth / 2,
-                altoMitad: window.innerHeight / 2,
+        const preloadImages = (images: string[]) => {
+            let loadedImages = 0;
+            const totalImages = images.length;
+            images.forEach((src) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => {
+                    loadedImages++;
+                    if (loadedImages === totalImages) {
+                        setImagesLoaded(true); // Todas las imágenes han sido cargadas
+                    }
+                };
             });
         };
 
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        preloadImages([...idleImages, ...coverImages]);
     }, []);
 
-    // Manejar movimiento del mouse
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (seguirPunteroMouse.current) {
-                const { anchoMitad, altoMitad } = windowSize;
-                if (e.clientX < anchoMitad && e.clientY < altoMitad) {
-                    setMonsterSrc(idleImages[1]);
-                } else if (e.clientX < anchoMitad && e.clientY > altoMitad) {
-                    setMonsterSrc(idleImages[2]);
-                } else if (e.clientX > anchoMitad && e.clientY < altoMitad) {
-                    setMonsterSrc(idleImages[4]);
-                } else {
-                    setMonsterSrc(idleImages[3]);
-                }
+    // Función para recorrer imágenes suavemente
+    const animateImages = (images: string[], delay: number, reverse = false) => {
+        let index = reverse ? images.length - 1 : 0;
+
+        const loop = () => {
+            setMonsterSrc(images[index]);
+            index = reverse ? index - 1 : index + 1;
+
+            if ((reverse && index >= 0) || (!reverse && index < images.length)) {
+                currentTimeout.current = window.setTimeout(loop, delay);
             }
         };
 
-        window.addEventListener("mousemove", handleMouseMove);
-
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            if (coverInterval.current !== null) {
-                window.clearInterval(coverInterval.current);
-                coverInterval.current = null;
-            }
-            if (descubrirInterval.current !== null) {
-                window.clearInterval(descubrirInterval.current);
-                descubrirInterval.current = null;
-            }
-        };
-    }, [windowSize]);
-
-    // Manejar foco en el input de usuario
-    const handleUsuarioFocus = () => {
-        seguirPunteroMouse.current = false;
+        loop(); // Iniciar la animación
     };
 
-    const handleUsuarioBlur = () => {
-        seguirPunteroMouse.current = true;
-    };
-
-    // Manejar foco en el input de contraseña
+    // Manejo del foco en el input de contraseña
     const handleClaveFocus = () => {
-        seguirPunteroMouse.current = false;
-        let cont = 1;
-
-        if (coverInterval.current !== null) {
-            window.clearInterval(coverInterval.current);
-            coverInterval.current = null;
-        }
-
-        coverInterval.current = window.setInterval(() => {
-            if (cont <= coverImages.length) {
-                setMonsterSrc(coverImages[cont - 1]);
-                cont++;
-            } else {
-                if (coverInterval.current !== null) {
-                    window.clearInterval(coverInterval.current);
-                    coverInterval.current = null;
-                }
-            }
-        }, 60);
+        clearTimeouts();
+        animateImages(coverImages, 40); // Animación fluida al enfocar
     };
 
     const handleClaveBlur = () => {
-        seguirPunteroMouse.current = true;
-        let cont = coverImages.length;
-
-        if (descubrirInterval.current !== null) {
-            window.clearInterval(descubrirInterval.current);
-            descubrirInterval.current = null;
-        }
-
-        descubrirInterval.current = window.setInterval(() => {
-            if (cont > 0) {
-                setMonsterSrc(coverImages[cont - 1]);
-                cont--;
-            } else {
-                if (descubrirInterval.current !== null) {
-                    window.clearInterval(descubrirInterval.current);
-                    descubrirInterval.current = null;
-                }
-            }
-        }, 60);
+        clearTimeouts();
+        animateImages(coverImages, 40, true); // Animación inversa al desenfocar
     };
 
-    // Manejar cambio en los inputs
+    // Limpiar timeouts al desmontar el componente o cancelar animación
+    const clearTimeouts = () => {
+        if (currentTimeout.current !== null) {
+            window.clearTimeout(currentTimeout.current);
+            currentTimeout.current = null;
+        }
+    };
+
+    useEffect(() => {
+        return () => clearTimeouts(); // Limpiar timeouts al desmontar
+    }, []);
+
+    // Manejar cambios en los inputs
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prevFormData) => ({
@@ -161,10 +106,9 @@ export default function LoginForm() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const data = await login(formData); // Llama a la función `login` y recibe `AuthResponse`
+            const data = await login(formData);
             setError(null);
 
-            // Guarda el usuario en el contexto de autenticación si tiene los tokens
             if (data.data.token) {
                 auth.saveUser(data.data);
                 navigate("/dashboard");
@@ -174,6 +118,11 @@ export default function LoginForm() {
             setError(message);
         }
     };
+
+    // Mostrar un loader mientras se precargan las imágenes
+    if (!imagesLoaded) {
+        return <div className="flex items-center justify-center h-screen">Cargando...</div>;
+    }
 
     return (
         <div className="flex flex-col items-center justify-center relative">
@@ -191,8 +140,6 @@ export default function LoginForm() {
                         id="username"
                         value={formData.username}
                         onChange={handleChange}
-                        onFocus={handleUsuarioFocus}
-                        onBlur={handleUsuarioBlur}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="mounstrito.gracioso@gmail.com"
                         required

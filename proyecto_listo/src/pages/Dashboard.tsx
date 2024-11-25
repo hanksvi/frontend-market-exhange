@@ -17,7 +17,7 @@ export default function Dashboard() {
     }, [getAccessToken]);
 
     return (
-        <div className="flex flex-col lg:flex-row h-screen bg-green-50">
+        <div className="flex flex-col lg:flex-row h-scren">
             {/* Sidebar Izquierdo */}
             <div className="flex-1 bg-white shadow-lg p-6 rounded-lg border border-green-300">
                 <h1 className="text-3xl font-bold text-green-800 mb-6">Dashboard</h1>
@@ -28,7 +28,6 @@ export default function Dashboard() {
                     </div>
                 ) : (
                     <div>
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Publicaciones Disponibles</h2>
                         <AllItems /> {/* Renderiza el componente AllItems */}
                     </div>
                 )}
