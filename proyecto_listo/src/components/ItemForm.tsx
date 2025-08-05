@@ -5,10 +5,15 @@ import { CategoryResponse } from "../interfaces/category/CategoryResponse";
 import { item } from "../services/item/item";
 import { useNavigate } from "react-router-dom";
 
-interface ItemFormProps {
-  onSubmitSuccess: (response: any) => void;
-  onSubmitError: (error: any) => void;
-}
+type ItemFormProps = {
+    initialData: {
+        name: string;
+        description: string;
+        condition: "NEW" | "USED";
+    };
+    onSubmitSuccess: (response: any) => void;
+    onSubmitError: (error: any) => void;
+};
 
 export default function ItemForm({ onSubmitSuccess, onSubmitError }: ItemFormProps) {
   const navigate = useNavigate();
