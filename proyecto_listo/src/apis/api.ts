@@ -43,7 +43,7 @@ export default class Api {
 
     return this._instance;
   }
-
+// eslint-disable-next-line no-unused-vars
   public async request<RequestType, ResponseType>(config: AxiosRequestConfig) {
     const configOptions: AxiosRequestConfig = {
       ...config,
